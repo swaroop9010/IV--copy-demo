@@ -5,17 +5,36 @@ body {
   background-size: cover;
   color: white;
   text-align: center;
+  transition: background 0.4s, color 0.4s;
 }
 
 .hero {
   background: rgba(0, 0, 0, 0.5);
   padding: 40px 20px;
   margin-bottom: 20px;
+  position: relative;
 }
 
 h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
+}
+
+.dark-toggle {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+.dark-toggle:hover {
+  background: #ccc;
 }
 
 .btn-group {
@@ -36,7 +55,6 @@ h1 {
   cursor: pointer;
   transition: background 0.3s ease;
 }
-
 .btn-group button:hover {
   background-color: #1c5980;
 }
@@ -47,7 +65,7 @@ h1 {
   max-width: 950px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   overflow-x: auto;
 }
 
@@ -65,12 +83,20 @@ h1 {
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: background 0.3s ease;
 }
-
 .chart-box h2 {
   margin-bottom: 10px;
   color: black;
   font-size: 1.3rem;
+}
+
+.insight-summary {
+  color: #222;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  text-align: left;
+  padding: 0 10px;
 }
 
 .chart-header {
@@ -85,35 +111,30 @@ h1 {
   gap: 8px;
 }
 
-.reset-btn {
-  font-size: 12px;
-  padding: 6px 12px;
-  background-color: #198754;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.reset-btn:hover {
-  background-color: #145c32;
-}
-
+.reset-btn,
 .fullscreen-btn {
   font-size: 12px;
   padding: 6px 12px;
-  background-color: #444;
-  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
-
+.reset-btn {
+  background-color: #198754;
+  color: white;
+}
+.reset-btn:hover {
+  background-color: #145c32;
+}
+.fullscreen-btn {
+  background-color: #444;
+  color: white;
+}
 .fullscreen-btn:hover {
   background-color: #000;
 }
 
-/* Fullscreen modal styling */
+/* Fullscreen modal */
 .modal {
   display: none;
   position: fixed;
@@ -124,9 +145,8 @@ h1 {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.9);
+  background-color: rgba(0, 0, 0, 0.9);
 }
-
 .modal-content {
   margin: auto;
   background: white;
@@ -137,12 +157,10 @@ h1 {
   border-radius: 10px;
   position: relative;
 }
-
 .modal-content svg {
   width: 100% !important;
   height: auto !important;
 }
-
 .close {
   color: red;
   position: absolute;
@@ -153,13 +171,15 @@ h1 {
   cursor: pointer;
 }
 
+/* ABOUT SECTION */
 .full-width-about {
-  background: rgba(0, 0, 0, 0.5); /* Matches hero section */
+  background: rgba(0, 0, 0, 0.5); /* same as hero */
   padding: 60px 20px;
-  margin: 40px auto;
+  margin-top: 40px;
   border-radius: 16px;
-  max-width: 1300px;       /* Matches #charts-grid width */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .about-content {
@@ -170,25 +190,22 @@ h1 {
   line-height: 1.8;
   text-align: left;
 }
-
 .about-content h3 {
   font-size: 1.8rem;
   margin-bottom: 20px;
 }
-
 .about-content ul {
   padding-left: 20px;
   margin-top: 10px;
   margin-bottom: 20px;
 }
-
 .about-content li {
   margin-bottom: 10px;
 }
 
-/* Optional: Footer */
+/* Footer */
 .footer {
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 0, 0, 0.7);
   color: #ccc;
   text-align: center;
   padding: 15px;
@@ -196,8 +213,25 @@ h1 {
   margin-top: 20px;
 }
 
-svg {
-  display: block;
-  margin: auto;
-  max-width: 100%;
+/* Dark mode overrides */
+body.dark-mode {
+  background-color: #111;
+  color: #eee;
+}
+body.dark-mode .chart-box {
+  background: rgba(30, 30, 30, 0.9);
+}
+body.dark-mode .insight-summary {
+  color: #ccc;
+}
+body.dark-mode .about-content {
+  color: #eee;
+}
+body.dark-mode .modal-content {
+  background: #1e1e1e;
+  color: white;
+}
+body.dark-mode .footer {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ccc;
 }
