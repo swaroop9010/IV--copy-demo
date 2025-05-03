@@ -75,7 +75,7 @@ function updateLineChart(data) {
       .style("font-size", "12px");
   });
 
-  lineSVG.selectAll(".axis path, .axis line, .axis text")
-    .attr("stroke", "black")
-    .attr("fill", "black");
+  lineSVG.selectAll("path.domain").attr("stroke", "black");
+  lineSVG.selectAll(".tick line").attr("stroke", "black");
+  lineSVG.selectAll(".tick text").attr("fill", "black");
 }
