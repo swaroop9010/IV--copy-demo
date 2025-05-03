@@ -51,11 +51,6 @@ h1 {
   overflow-x: auto;
 }
 
-/* ✅ Removed old floating Reset button */
-.reset-btn {
-  /* This is intentionally left empty now */
-}
-
 /* ✅ Reset button per chart */
 .chart-reset {
   text-align: left;
@@ -157,6 +152,32 @@ h1 {
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.reset-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.reset-btn:hover {
+  background-color: #145c32;
 }
 
 svg {
