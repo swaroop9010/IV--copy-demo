@@ -13,6 +13,8 @@
       <button onclick="showChart('lineChart')">MPG Over Years</button>
       <button onclick="showChart('scatterPlot')">Horsepower vs MPG</button>
       <button onclick="showChart('barChart')">Avg MPG by Manufacturer</button>
+      <button onclick="showChart('pieChart')">Pie Chart (MPG by Car)</button>
+      <button onclick="resetAll()">Reset All</button>
     </div>
   </div>
 
@@ -20,12 +22,13 @@
     <section id="lineChart" class="chart-section hidden"></section>
     <section id="scatterPlot" class="chart-section hidden"></section>
     <section id="barChart" class="chart-section hidden"></section>
+    <section id="pieChart" class="chart-section hidden"></section>
   </div>
 
   <script src="line-chart.js"></script>
   <script src="scatter-plot.js"></script>
   <script src="bar-chart.js"></script>
-
+  <script src="pie-chart.js"></script>
   <script>
     function showChart(chartId) {
       document.querySelectorAll(".chart-section").forEach(section => {
@@ -33,6 +36,39 @@
       });
       document.getElementById(chartId).classList.remove("hidden");
     }
+
+    function handleInteraction(selectedData) {
+      // Simple filtering function based on clicked data properties
+      d3.csv("a1-cars.csv").then(data => {
+        const filtered = data.filter(d => 
+          d.Manufacturer === selectedData.Manufacturer ||
+          d.Origin === selectedData.Origin ||
+          d.Car === selectedData.Car ||
+          +d.MPG === +selectedData.MPG
+        );
+        updateBarChart(filtered);
+        updateLineChart(filtered);
+        updateScatterPlot(filtered);
+        updatePieChart(filtered);
+      });
+    }
+
+    function resetAll() {
+      d3.csv("a1-cars.csv").then(data => {
+        updateBarChart(data);
+        updateLineChart(data);
+        updateScatterPlot(data);
+        updatePieChart(data);
+      });
+    }
+
+    // Initial Load
+    d3.csv("a1-cars.csv").then(data => {
+      updateBarChart(data);
+      updateLineChart(data);
+      updateScatterPlot(data);
+      updatePieChart(data);
+    });
   </script>
 </body>
 </html>
