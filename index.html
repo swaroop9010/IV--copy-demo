@@ -9,7 +9,6 @@
 <body>
   <div class="hero">
     <h1>Car Performance Visualization Dashboard</h1>
-    <button class="reset-btn" onclick="resetAll()">Reset All</button>
   </div>
 
   <div id="charts-grid">
@@ -17,6 +16,9 @@
       <div class="chart-header">
         <h2>Average MPG by Origin</h2>
         <button class="fullscreen-btn" onclick="openFullscreen('barChart')">Full Screen</button>
+      </div>
+      <div class="chart-reset">
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
       </div>
       <section id="barChart" class="chart-section"></section>
     </div>
@@ -26,6 +28,9 @@
         <h2>MPG Trend Over Years by Origin</h2>
         <button class="fullscreen-btn" onclick="openFullscreen('lineChart')">Full Screen</button>
       </div>
+      <div class="chart-reset">
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
+      </div>
       <section id="lineChart" class="chart-section"></section>
     </div>
 
@@ -33,6 +38,9 @@
       <div class="chart-header">
         <h2>Horsepower vs Weight</h2>
         <button class="fullscreen-btn" onclick="openFullscreen('scatterPlot')">Full Screen</button>
+      </div>
+      <div class="chart-reset">
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
       </div>
       <section id="scatterPlot" class="chart-section"></section>
     </div>
@@ -42,11 +50,14 @@
         <h2>Car Count by Origin</h2>
         <button class="fullscreen-btn" onclick="openFullscreen('pieChart')">Full Screen</button>
       </div>
+      <div class="chart-reset">
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
+      </div>
       <section id="pieChart" class="chart-section"></section>
     </div>
   </div>
 
-  <!-- Full Screen Modal -->
+  <!-- Fullscreen Modal -->
   <div id="fullscreenModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeFullscreen()">&times;</span>
@@ -54,6 +65,7 @@
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="bar-chart.js"></script>
   <script src="line-chart.js"></script>
   <script src="scatter-plot.js"></script>
