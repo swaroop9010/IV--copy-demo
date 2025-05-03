@@ -180,6 +180,27 @@ h1 {
   background-color: #145c32;
 }
 
+.project-info {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 30px 20px;
+  max-width: 1000px;
+  margin: 40px auto 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  text-align: left;
+}
+
+.project-info h3 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.project-info p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
 svg {
   display: block;
   margin: auto;
