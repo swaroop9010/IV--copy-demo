@@ -51,26 +51,6 @@ h1 {
   overflow-x: auto;
 }
 
-/* ✅ Reset button per chart */
-.chart-reset {
-  text-align: left;
-  margin-bottom: 10px;
-}
-
-.chart-reset .reset-btn {
-  font-size: 12px;
-  padding: 6px 12px;
-  background-color: #198754;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.chart-reset .reset-btn:hover {
-  background-color: #145c32;
-}
-
 #charts-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -97,7 +77,26 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.reset-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.reset-btn:hover {
+  background-color: #145c32;
 }
 
 .fullscreen-btn {
@@ -154,90 +153,14 @@ h1 {
   cursor: pointer;
 }
 
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.chart-controls {
-  display: flex;
-  gap: 8px;
-}
-
-.reset-btn {
-  font-size: 12px;
-  padding: 6px 12px;
-  background-color: #198754;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.reset-btn:hover {
-  background-color: #145c32;
-}
-
-.project-info {
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 30px 20px;
-  max-width: 1000px;
-  margin: 40px auto 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  text-align: left;
-}
-
-.project-info h3 {
-  font-size: 1.8rem;
-  margin-bottom: 10px;
-}
-
-.project-info p {
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.footer {
-  background-color: rgba(0,0,0,0.7);
-  color: #ccc;
-  text-align: center;
-  padding: 15px;
-  font-size: 0.9rem;
-  margin-top: 20px;
-}
-
-.full-width-bg {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.7); /* Match hero black background */
-  padding: 40px 20px;
-  margin-top: 40px;
-  color: white;
-  border-top: 2px solid rgba(255,255,255,0.1);
-  border-bottom: 2px solid rgba(255,255,255,0.1);
-}
-
-.full-width-bg h3 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
-}
-
-.full-width-bg p {
-  max-width: 1000px;
-  margin: auto;
-  font-size: 1rem;
-  line-height: 1.7;
-  text-align: left;
-}
-
+/* ✅ FULL-WIDTH black background like hero */
 .full-width-about {
-  background-color: rgba(0, 0, 0, 0.75);
   width: 100%;
+  background: rgba(0, 0, 0, 0.85);
   padding: 60px 20px;
   margin-top: 40px;
+  border-top: 2px solid rgba(255,255,255,0.1);
+  border-bottom: 2px solid rgba(255,255,255,0.1);
 }
 
 .about-content {
@@ -262,6 +185,16 @@ h1 {
 
 .about-content li {
   margin-bottom: 10px;
+}
+
+/* Optional: Footer */
+.footer {
+  background-color: rgba(0,0,0,0.7);
+  color: #ccc;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9rem;
+  margin-top: 20px;
 }
 
 svg {
