@@ -152,6 +152,32 @@ h1 {
   cursor: pointer;
 }
 
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.chart-reset {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.chart-reset .reset-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chart-reset .reset-btn:hover {
+  background-color: #145c32;
+}
+
 svg {
   display: block;
   margin: auto;
