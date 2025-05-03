@@ -33,8 +33,8 @@
           d.Car === selectedData.Car ||
           +d.MPG === +selectedData.MPG
         );
-        updateBarChart(filtered);
         updateLineChart(filtered);
+        updateBarChart(filtered);
         updateScatterPlot(filtered);
         updatePieChart(filtered);
       });
@@ -42,8 +42,8 @@
 
     function resetAll() {
       d3.csv("a1-cars.csv").then(data => {
-        updateBarChart(data);
         updateLineChart(data);
+        updateBarChart(data);
         updateScatterPlot(data);
         updatePieChart(data);
       });
@@ -51,8 +51,8 @@
 
     // Initial chart load
     d3.csv("a1-cars.csv").then(data => {
-      updateBarChart(data);
       updateLineChart(data);
+      updateBarChart(data);
       updateScatterPlot(data);
       updatePieChart(data);
     });
