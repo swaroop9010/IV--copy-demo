@@ -153,16 +153,13 @@ h1 {
   cursor: pointer;
 }
 
-/* ✅ FULL-WIDTH black background like hero */
 .full-width-about {
-  background: rgba(0, 0, 0, 0.5); /* same as .hero */
+  background: rgba(0, 0, 0, 0.5); /* Matches hero section */
   padding: 60px 20px;
-  margin-top: 40px;
-  color: white;
+  margin: 40px auto;
   border-radius: 16px;
-  max-width: 1300px;      /* same width as charts grid */
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 1300px;       /* Matches #charts-grid width */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .about-content {
