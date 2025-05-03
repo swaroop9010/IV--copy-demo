@@ -54,7 +54,7 @@ function updateScatterPlot(data) {
     .append("title")
     .text(d => `${d.Car}\nWeight: ${d.Weight} lbs\nHP: ${d.Horsepower}`);
 
-  scatterSVG.selectAll(".axis path, .axis line, .axis text")
-    .attr("stroke", "black")
-    .attr("fill", "black");
+  scatterSVG.selectAll("path.domain").attr("stroke", "black");
+  scatterSVG.selectAll(".tick line").attr("stroke", "black");
+  scatterSVG.selectAll(".tick text").attr("fill", "black");
 }
