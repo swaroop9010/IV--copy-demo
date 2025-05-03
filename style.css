@@ -210,6 +210,29 @@ h1 {
   margin-top: 20px;
 }
 
+.full-width-bg {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Match hero black background */
+  padding: 40px 20px;
+  margin-top: 40px;
+  color: white;
+  border-top: 2px solid rgba(255,255,255,0.1);
+  border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+.full-width-bg h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.full-width-bg p {
+  max-width: 1000px;
+  margin: auto;
+  font-size: 1rem;
+  line-height: 1.7;
+  text-align: left;
+}
+
 svg {
   display: block;
   margin: auto;
