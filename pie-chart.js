@@ -5,13 +5,15 @@ function updatePieChart(data) {
   pieOriginalData = data;
   d3.select("#pieChart").select("svg").remove();
 
-  // Limit to top 10 by MPG
-  const topCars = data
-    .sort((a, b) => +b.MPG - +a.MPG)
-    .slice(0, 10);
+  // Group data by Origin and count unique years
+  const grouped = d3.rollups(
+    data,
+    v => new Set(v.map(d => d["Model Year"])).size,
+    d => d.Origin
+  ).map(([key, value]) => ({ Origin: key, YearsCount: value }));
 
   const width = 500, height = 350, radius = Math.min(width, height) / 2;
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
+  const color = d3.scaleOrdinal(d3.schemeSet2);
 
   pieSVG = d3.select("#pieChart")
     .append("svg")
@@ -20,43 +22,37 @@ function updatePieChart(data) {
     .append("g")
     .attr("transform", `translate(${radius}, ${height / 2})`);
 
-  const pie = d3.pie().value(d => d.MPG).sort(null);
+  const pie = d3.pie().value(d => d.YearsCount).sort(null);
   const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
   const arcs = pieSVG.selectAll("arc")
-    .data(pie(topCars))
+    .data(pie(grouped))
     .enter()
     .append("g")
     .attr("class", "arc");
 
   arcs.append("path")
     .attr("d", arc)
-    .attr("fill", (d, i) => color(d.data.Car))
+    .attr("fill", d => color(d.data.Origin))
     .on("click", (event, d) => {
-      handleInteraction(d.data);
+      handleInteraction({ Origin: d.data.Origin });
     });
 
   arcs.append("title")
-    .text(d => `${d.data.Car} – ${d.data.MPG} MPG`);
+    .text(d => `${d.data.Origin} – ${d.data.YearsCount} years`);
 
-  // Add legend
+  // Legend
   const legend = d3.select("#pieChart svg")
     .append("g")
-    .attr("transform", `translate(${width - 20}, 20)`);
+    .attr("transform", `translate(${width - 10}, 20)`);
 
-  topCars.forEach((d, i) => {
-    const legendRow = legend.append("g")
-      .attr("transform", `translate(0, ${i * 20})`);
-
-    legendRow.append("rect")
-      .attr("width", 15)
-      .attr("height", 15)
-      .attr("fill", color(d.Car));
-
-    legendRow.append("text")
+  grouped.forEach((d, i) => {
+    const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
+    row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(d.Origin));
+    row.append("text")
       .attr("x", 20)
       .attr("y", 12)
-      .text(d.Car)
+      .text(`${d.Origin}`)
       .style("font-size", "12px")
       .attr("fill", "black");
   });
