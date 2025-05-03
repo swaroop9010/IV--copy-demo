@@ -1,8 +1,7 @@
-
 // pie-chart.js
 let pieSVG, pieOriginalData;
 
-function drawPieChart(data) {
+function updatePieChart(data) {
   pieOriginalData = data;
   d3.select("#pieChart").select("svg").remove();
 
@@ -16,7 +15,7 @@ function drawPieChart(data) {
     .append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  const pie = d3.pie().value(d => d.MPG);
+  const pie = d3.pie().value(d => d.MPG).sort(null);
   const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
   const arcs = pieSVG.selectAll("arc")
@@ -26,15 +25,10 @@ function drawPieChart(data) {
   arcs.append("path")
     .attr("d", arc)
     .attr("fill", (d, i) => color(i))
-    .on("click", (event, d) => handleInteraction(d.data));
+    .on("click", (event, d) => {
+      handleInteraction(d.data);
+    });
 
-  arcs.append("title").text(d => `${d.Car}: ${d.MPG}`);
-}
-
-function updatePieChart(data) {
-  drawPieChart(data);
-}
-
-function resetPieChart() {
-  drawPieChart(pieOriginalData);
+  arcs.append("title")
+    .text(d => `${d.Car} - ${d.MPG} MPG`);
 }
