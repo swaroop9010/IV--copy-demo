@@ -5,14 +5,27 @@ function updateLineChart(data) {
   lineOriginalData = data;
   d3.select("#lineChart").select("svg").remove();
 
-  // Sort data by MPG descending and get top 20 cars
-  const topCars = [...data]
-    .filter(d => d.Car && !isNaN(+d.MPG))
-    .sort((a, b) => +b.MPG - +a.MPG)
-    .slice(0, 20);
+  data.forEach(d => {
+    d["Model Year"] = +d["Model Year"];
+    d.MPG = +d.MPG;
+  });
 
-  const margin = {top: 40, right: 80, bottom: 100, left: 60},
-        width = 900 - margin.left - margin.right,
+  // Group by Origin and Year, compute avg MPG
+  const groupedData = Array.from(
+    d3.group(data, d => d.Origin),
+    ([origin, values]) => ({
+      origin,
+      values: d3.rollups(
+        values,
+        v => d3.mean(v, d => d.MPG),
+        d => d["Model Year"]
+      ).map(([year, avgMPG]) => ({ year, avgMPG }))
+        .sort((a, b) => a.year - b.year)
+    })
+  );
+
+  const margin = { top: 40, right: 80, bottom: 50, left: 60 },
+        width = 800 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
   lineSVG = d3.select("#lineChart")
@@ -22,53 +35,46 @@ function updateLineChart(data) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  const x = d3.scalePoint()
-              .domain(topCars.map(d => d.Car))
+  const x = d3.scaleLinear()
+              .domain([70, 82])
               .range([0, width]);
 
   const y = d3.scaleLinear()
-              .domain([0, d3.max(topCars, d => +d.MPG)])
+              .domain([0, d3.max(groupedData, g => d3.max(g.values, d => d.avgMPG))])
               .range([height, 0]);
+
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
 
   // X Axis
   lineSVG.append("g")
     .attr("transform", `translate(0,${height})`)
-    .attr("class", "axis")
-    .call(d3.axisBottom(x))
-    .selectAll("text")
-    .attr("transform", "rotate(-45)")
-    .style("text-anchor", "end")
-    .style("font-size", "10px");
+    .call(d3.axisBottom(x).tickFormat(d => 1900 + d));
 
   // Y Axis
-  lineSVG.append("g")
-    .attr("class", "axis")
-    .call(d3.axisLeft(y));
+  lineSVG.append("g").call(d3.axisLeft(y));
 
+  // Line generator
   const line = d3.line()
-    .x(d => x(d.Car))
-    .y(d => y(+d.MPG));
+    .x(d => x(d.year))
+    .y(d => y(d.avgMPG));
 
-  lineSVG.append("path")
-    .datum(topCars)
-    .attr("fill", "none")
-    .attr("stroke", "#1f77b4")
-    .attr("stroke-width", 2)
-    .attr("d", line);
+  groupedData.forEach(group => {
+    lineSVG.append("path")
+      .datum(group.values)
+      .attr("fill", "none")
+      .attr("stroke", color(group.origin))
+      .attr("stroke-width", 2)
+      .attr("d", line)
+      .on("click", () => handleInteraction({ Origin: group.origin }));
 
-  // Circles on points
-  lineSVG.selectAll("circle")
-    .data(topCars)
-    .enter().append("circle")
-    .attr("cx", d => x(d.Car))
-    .attr("cy", d => y(+d.MPG))
-    .attr("r", 4)
-    .attr("fill", "steelblue")
-    .on("click", (event, d) => handleInteraction(d))
-    .append("title")
-    .text(d => `${d.Car} – ${d.MPG} MPG`);
+    lineSVG.append("text")
+      .attr("x", width - 60)
+      .attr("y", y(group.values[group.values.length - 1].avgMPG))
+      .attr("fill", color(group.origin))
+      .text(group.origin)
+      .style("font-size", "12px");
+  });
 
-  // Style axis
   lineSVG.selectAll(".axis path, .axis line, .axis text")
     .attr("stroke", "black")
     .attr("fill", "black");
