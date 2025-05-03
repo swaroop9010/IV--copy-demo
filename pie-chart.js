@@ -5,15 +5,15 @@ function updatePieChart(data) {
   pieOriginalData = data;
   d3.select("#pieChart").select("svg").remove();
 
-  // Group data by Origin and count unique years
-  const grouped = d3.rollups(
+  // Count cars by origin
+  const originCounts = d3.rollups(
     data,
-    v => new Set(v.map(d => d["Model Year"])).size,
+    v => v.length,
     d => d.Origin
-  ).map(([key, value]) => ({ Origin: key, YearsCount: value }));
+  ).map(([Origin, Count]) => ({ Origin, Count }));
 
   const width = 500, height = 350, radius = Math.min(width, height) / 2;
-  const color = d3.scaleOrdinal(d3.schemeSet2);
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
 
   pieSVG = d3.select("#pieChart")
     .append("svg")
@@ -22,14 +22,12 @@ function updatePieChart(data) {
     .append("g")
     .attr("transform", `translate(${radius}, ${height / 2})`);
 
-  const pie = d3.pie().value(d => d.YearsCount).sort(null);
+  const pie = d3.pie().value(d => d.Count).sort(null);
   const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
   const arcs = pieSVG.selectAll("arc")
-    .data(pie(grouped))
-    .enter()
-    .append("g")
-    .attr("class", "arc");
+    .data(pie(originCounts))
+    .enter().append("g").attr("class", "arc");
 
   arcs.append("path")
     .attr("d", arc)
@@ -39,14 +37,14 @@ function updatePieChart(data) {
     });
 
   arcs.append("title")
-    .text(d => `${d.data.Origin} – ${d.data.YearsCount} years`);
+    .text(d => `${d.data.Origin} – ${d.data.Count} cars`);
 
-  // Legend
+  // Add legend
   const legend = d3.select("#pieChart svg")
     .append("g")
     .attr("transform", `translate(${width - 10}, 20)`);
 
-  grouped.forEach((d, i) => {
+  originCounts.forEach((d, i) => {
     const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
     row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(d.Origin));
     row.append("text")
