@@ -60,22 +60,20 @@ h1 {
 }
 
 .chart-section {
-  margin: 40px auto;
-  padding: 20px;
-  max-width: 950px;
+  margin-top: 20px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  overflow-x: auto;
 }
 
 #charts-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 30px;
-  padding: 40px;
-  max-width: 1300px;
-  margin: auto;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .chart-box {
