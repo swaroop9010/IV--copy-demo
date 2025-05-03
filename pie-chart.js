@@ -5,13 +5,13 @@ function updatePieChart(data) {
   pieOriginalData = data;
   d3.select("#pieChart").select("svg").remove();
 
-  // Count cars by origin
   const originCounts = d3.rollups(
     data,
     v => v.length,
     d => d.Origin
   ).map(([Origin, Count]) => ({ Origin, Count }));
 
+  const total = d3.sum(originCounts, d => d.Count);
   const width = 500, height = 350, radius = Math.min(width, height) / 2;
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -24,6 +24,7 @@ function updatePieChart(data) {
 
   const pie = d3.pie().value(d => d.Count).sort(null);
   const arc = d3.arc().innerRadius(0).outerRadius(radius);
+  const labelArc = d3.arc().innerRadius(0).outerRadius(radius - 50);
 
   const arcs = pieSVG.selectAll("arc")
     .data(pie(originCounts))
@@ -33,13 +34,19 @@ function updatePieChart(data) {
     .attr("d", arc)
     .attr("fill", d => color(d.data.Origin))
     .on("click", (event, d) => {
-      handleInteraction({ Origin: d.data.Origin });
+      const percentage = ((d.data.Count / total) * 100).toFixed(1);
+      alert(`${d.data.Origin}: ${percentage}%`);
     });
 
-  arcs.append("title")
-    .text(d => `${d.data.Origin} – ${d.data.Count} cars`);
+  arcs.append("text")
+    .attr("transform", d => `translate(${labelArc.centroid(d)})`)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", "middle")
+    .style("font-size", "12px")
+    .text(d => `${((d.data.Count / total) * 100).toFixed(1)}%`)
+    .attr("fill", "white");
 
-  // Add legend
+  // Legend
   const legend = d3.select("#pieChart svg")
     .append("g")
     .attr("transform", `translate(${width - 10}, 20)`);
@@ -50,7 +57,7 @@ function updatePieChart(data) {
     row.append("text")
       .attr("x", 20)
       .attr("y", 12)
-      .text(`${d.Origin}`)
+      .text(d.Origin)
       .style("font-size", "12px")
       .attr("fill", "black");
   });
