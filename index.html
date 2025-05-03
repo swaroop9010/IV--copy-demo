@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Car Performance Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="hero">
+    <h1>Car Performance Visualization Dashboard</h1>
+    <div class="btn-group">
+      <button onclick="showChart('lineChart')">MPG Over Years</button>
+      <button onclick="showChart('scatterPlot')">Horsepower vs MPG</button>
+      <button onclick="showChart('barChart')">Avg MPG by Manufacturer</button>
+    </div>
+  </div>
+
+  <div id="charts-container">
+    <section id="lineChart" class="chart-section hidden"></section>
+    <section id="scatterPlot" class="chart-section hidden"></section>
+    <section id="barChart" class="chart-section hidden"></section>
+  </div>
+
+  <script src="line-chart.js"></script>
+  <script src="scatter-plot.js"></script>
+  <script src="bar-chart.js"></script>
+
+  <script>
+    function showChart(chartId) {
+      document.querySelectorAll(".chart-section").forEach(section => {
+        section.classList.add("hidden");
+      });
+      document.getElementById(chartId).classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
