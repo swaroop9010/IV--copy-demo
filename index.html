@@ -9,38 +9,25 @@
 <body>
   <div class="hero">
     <h1>Car Performance Visualization Dashboard</h1>
-    <div class="btn-group">
-      <button onclick="showChart('lineChart')">MPG Over Years</button>
-      <button onclick="showChart('scatterPlot')">Horsepower vs MPG</button>
-      <button onclick="showChart('barChart')">Avg MPG by Manufacturer</button>
-      <button onclick="showChart('pieChart')">Pie Chart (MPG by Car)</button>
-      <button onclick="resetAll()">Reset All</button>
-    </div>
+    <button class="reset-btn" onclick="resetAll()">Reset All</button>
   </div>
 
   <div id="charts-container">
-    <section id="lineChart" class="chart-section hidden"></section>
-    <section id="scatterPlot" class="chart-section hidden"></section>
-    <section id="barChart" class="chart-section hidden"></section>
-    <section id="pieChart" class="chart-section hidden"></section>
+    <section id="barChart" class="chart-section"></section>
+    <section id="lineChart" class="chart-section"></section>
+    <section id="scatterPlot" class="chart-section"></section>
+    <section id="pieChart" class="chart-section"></section>
   </div>
 
   <script src="line-chart.js"></script>
   <script src="scatter-plot.js"></script>
   <script src="bar-chart.js"></script>
   <script src="pie-chart.js"></script>
-  <script>
-    function showChart(chartId) {
-      document.querySelectorAll(".chart-section").forEach(section => {
-        section.classList.add("hidden");
-      });
-      document.getElementById(chartId).classList.remove("hidden");
-    }
 
+  <script>
     function handleInteraction(selectedData) {
-      // Simple filtering function based on clicked data properties
       d3.csv("a1-cars.csv").then(data => {
-        const filtered = data.filter(d => 
+        const filtered = data.filter(d =>
           d.Manufacturer === selectedData.Manufacturer ||
           d.Origin === selectedData.Origin ||
           d.Car === selectedData.Car ||
