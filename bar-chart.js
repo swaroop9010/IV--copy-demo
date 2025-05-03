@@ -52,7 +52,7 @@ function updateBarChart(data) {
     .attr("fill", "#ff7f0e")
     .on("click", (event, d) => handleInteraction({ Origin: d.Origin }));
 
-  barSVG.selectAll(".axis path, .axis line, .axis text")
-    .attr("stroke", "black")
-    .attr("fill", "black");
+  barSVG.selectAll("path.domain").attr("stroke", "black");
+  barSVG.selectAll(".tick line").attr("stroke", "black");
+  barSVG.selectAll(".tick text").attr("fill", "black");
 }
