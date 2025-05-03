@@ -14,20 +14,43 @@
 
   <div id="charts-grid">
     <div class="chart-box">
-      <h2>Horsepower vs Weight</h2>
-      <section id="scatterPlot" class="chart-section"></section>
-    </div>
-    <div class="chart-box">
-      <h2>Average MPG by Origin</h2>
+      <div class="chart-header">
+        <h2>Average MPG by Origin</h2>
+        <button class="fullscreen-btn" onclick="openFullscreen('barChart')">Full Screen</button>
+      </div>
       <section id="barChart" class="chart-section"></section>
     </div>
+
     <div class="chart-box">
-      <h2>MPG Trend Over Years by Origin</h2>
+      <div class="chart-header">
+        <h2>MPG Trend Over Years by Origin</h2>
+        <button class="fullscreen-btn" onclick="openFullscreen('lineChart')">Full Screen</button>
+      </div>
       <section id="lineChart" class="chart-section"></section>
     </div>
+
     <div class="chart-box">
-      <h2>Car Count by Origin</h2>
+      <div class="chart-header">
+        <h2>Horsepower vs Weight</h2>
+        <button class="fullscreen-btn" onclick="openFullscreen('scatterPlot')">Full Screen</button>
+      </div>
+      <section id="scatterPlot" class="chart-section"></section>
+    </div>
+
+    <div class="chart-box">
+      <div class="chart-header">
+        <h2>Car Count by Origin</h2>
+        <button class="fullscreen-btn" onclick="openFullscreen('pieChart')">Full Screen</button>
+      </div>
       <section id="pieChart" class="chart-section"></section>
+    </div>
+  </div>
+
+  <!-- Full Screen Modal -->
+  <div id="fullscreenModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeFullscreen()">&times;</span>
+      <div id="fullscreenContent"></div>
     </div>
   </div>
 
@@ -59,6 +82,18 @@
         updateScatterPlot(data);
         updatePieChart(data);
       });
+    }
+
+    function openFullscreen(chartId) {
+      const content = document.getElementById(chartId).innerHTML;
+      document.getElementById("fullscreenContent").innerHTML = content;
+      document.getElementById("fullscreenModal").style.display = "block";
+    }
+
+    function closeFullscreen() {
+      document.getElementById("fullscreenModal").style.display = "none";
+      document.getElementById("fullscreenContent").innerHTML = '';
+      resetAll();
     }
 
     d3.csv("a1-cars.csv").then(data => {
