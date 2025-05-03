@@ -233,6 +233,37 @@ h1 {
   text-align: left;
 }
 
+.full-width-about {
+  background-color: rgba(0, 0, 0, 0.75);
+  width: 100%;
+  padding: 60px 20px;
+  margin-top: 40px;
+}
+
+.about-content {
+  max-width: 1000px;
+  margin: auto;
+  color: white;
+  font-size: 1rem;
+  line-height: 1.8;
+  text-align: left;
+}
+
+.about-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.about-content ul {
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.about-content li {
+  margin-bottom: 10px;
+}
+
 svg {
   display: block;
   margin: auto;
