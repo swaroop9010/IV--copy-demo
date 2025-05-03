@@ -51,22 +51,29 @@ h1 {
   overflow-x: auto;
 }
 
+/* ✅ Removed old floating Reset button */
 .reset-btn {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  background-color: #e74c3c;
-  color: white;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  /* This is intentionally left empty now */
 }
 
-.reset-btn:hover {
-  background-color: #c0392b;
+/* ✅ Reset button per chart */
+.chart-reset {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.chart-reset .reset-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chart-reset .reset-btn:hover {
+  background-color: #145c32;
 }
 
 #charts-grid {
@@ -95,7 +102,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .fullscreen-btn {
@@ -150,32 +157,6 @@ h1 {
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.chart-reset {
-  text-align: left;
-  margin-bottom: 10px;
-}
-
-.chart-reset .reset-btn {
-  font-size: 12px;
-  padding: 6px 12px;
-  background-color: #198754;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.chart-reset .reset-btn:hover {
-  background-color: #145c32;
 }
 
 svg {
