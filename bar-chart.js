@@ -1,4 +1,10 @@
-d3.csv("a1-cars.csv").then(data => {
+// bar-chart.js
+let barSVG, barOriginalData;
+
+function updateBarChart(data) {
+  barOriginalData = data;
+  d3.select("#barChart").select("svg").remove();
+
   let mpgByMaker = d3.rollups(data, v => d3.mean(v, d => +d.MPG), d => d.Manufacturer)
                      .filter(([key, val]) => !isNaN(val))
                      .sort((a, b) => d3.descending(a[1], b[1]));
@@ -7,7 +13,7 @@ d3.csv("a1-cars.csv").then(data => {
         width = 900 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
-  const svg = d3.select("#barChart")
+  barSVG = d3.select("#barChart")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -18,7 +24,7 @@ d3.csv("a1-cars.csv").then(data => {
   const y = d3.scaleLinear().domain([0, d3.max(mpgByMaker, d => d[1])]).range([height, 0]);
 
   // X Axis
-  svg.append("g")
+  barSVG.append("g")
      .attr("transform", `translate(0,${height})`)
      .attr("class", "axis")
      .call(d3.axisBottom(x))
@@ -27,22 +33,25 @@ d3.csv("a1-cars.csv").then(data => {
      .style("text-anchor", "end");
 
   // Y Axis
-  svg.append("g")
+  barSVG.append("g")
      .attr("class", "axis")
      .call(d3.axisLeft(y));
 
   // Bars
-  svg.selectAll("rect")
+  barSVG.selectAll("rect")
     .data(mpgByMaker)
     .enter().append("rect")
     .attr("x", d => x(d[0]))
     .attr("y", d => y(d[1]))
     .attr("width", x.bandwidth())
     .attr("height", d => height - y(d[1]))
-    .attr("fill", "#ff7f0e");
+    .attr("fill", "#ff7f0e")
+    .on("click", (event, d) => {
+      handleInteraction({ Manufacturer: d[0] });
+    });
 
   // Set axis color to black
-  svg.selectAll(".axis path, .axis line, .axis text")
+  barSVG.selectAll(".axis path, .axis line, .axis text")
      .attr("stroke", "black")
      .attr("fill", "black");
-});
+}
