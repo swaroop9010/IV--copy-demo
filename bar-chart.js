@@ -5,9 +5,12 @@ function updateBarChart(data) {
   barOriginalData = data;
   d3.select("#barChart").select("svg").remove();
 
-  let mpgByMaker = d3.rollups(data, v => d3.mean(v, d => +d.MPG), d => d.Manufacturer)
-                     .filter(([key, val]) => !isNaN(val))
-                     .sort((a, b) => d3.descending(a[1], b[1]));
+  // Count unique years per manufacturer
+  const manufacturerYears = d3.rollups(
+    data,
+    v => new Set(v.map(d => d["Model Year"])).size,
+    d => d.Manufacturer
+  ).sort((a, b) => d3.descending(a[1], b[1]));
 
   const margin = {top: 20, right: 30, bottom: 120, left: 60},
         width = 900 - margin.left - margin.right,
@@ -20,26 +23,32 @@ function updateBarChart(data) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  const x = d3.scaleBand().domain(mpgByMaker.map(d => d[0])).range([0, width]).padding(0.2);
-  const y = d3.scaleLinear().domain([0, d3.max(mpgByMaker, d => d[1])]).range([height, 0]);
+  const x = d3.scaleBand()
+              .domain(manufacturerYears.map(d => d[0]))
+              .range([0, width])
+              .padding(0.2);
+
+  const y = d3.scaleLinear()
+              .domain([0, d3.max(manufacturerYears, d => d[1])])
+              .range([height, 0]);
 
   // X Axis
   barSVG.append("g")
-     .attr("transform", `translate(0,${height})`)
-     .attr("class", "axis")
-     .call(d3.axisBottom(x))
-     .selectAll("text")
-     .attr("transform", "rotate(-45)")
-     .style("text-anchor", "end");
+    .attr("transform", `translate(0,${height})`)
+    .attr("class", "axis")
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("transform", "rotate(-45)")
+    .style("text-anchor", "end");
 
   // Y Axis
   barSVG.append("g")
-     .attr("class", "axis")
-     .call(d3.axisLeft(y));
+    .attr("class", "axis")
+    .call(d3.axisLeft(y));
 
   // Bars
   barSVG.selectAll("rect")
-    .data(mpgByMaker)
+    .data(manufacturerYears)
     .enter().append("rect")
     .attr("x", d => x(d[0]))
     .attr("y", d => y(d[1]))
@@ -50,8 +59,8 @@ function updateBarChart(data) {
       handleInteraction({ Manufacturer: d[0] });
     });
 
-  // Set axis color to black
+  // Axis styling
   barSVG.selectAll(".axis path, .axis line, .axis text")
-     .attr("stroke", "black")
-     .attr("fill", "black");
+    .attr("stroke", "black")
+    .attr("fill", "black");
 }
