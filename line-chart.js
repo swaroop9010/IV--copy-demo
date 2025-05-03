@@ -1,15 +1,22 @@
-d3.csv("a1-cars.csv").then(data => {
+// line-chart.js
+let lineSVG, lineOriginalData;
+
+function updateLineChart(data) {
+  lineOriginalData = data;
+  d3.select("#lineChart").select("svg").remove();
+
   data.forEach(d => {
     d["Model Year"] = +d["Model Year"];
     d.MPG = +d.MPG;
   });
 
   const nested = d3.groups(data, d => d["Origin"]);
+
   const margin = {top: 40, right: 80, bottom: 50, left: 60},
         width = 800 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
-  const svg = d3.select("#lineChart")
+  lineSVG = d3.select("#lineChart")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -21,13 +28,13 @@ d3.csv("a1-cars.csv").then(data => {
   const color = d3.scaleOrdinal(d3.schemeSet2);
 
   // X Axis
-  svg.append("g")
+  lineSVG.append("g")
      .attr("transform", `translate(0,${height})`)
      .attr("class", "axis")
      .call(d3.axisBottom(x).tickFormat(d => 1900 + d));
 
   // Y Axis
-  svg.append("g")
+  lineSVG.append("g")
      .attr("class", "axis")
      .call(d3.axisLeft(y));
 
@@ -39,28 +46,32 @@ d3.csv("a1-cars.csv").then(data => {
 
   // Plot lines and labels
   nested.forEach(([origin, values], i) => {
-  svg.append("path")
-    .datum(values)
-    .attr("fill", "none")
-    .attr("stroke", color(origin))
-    .attr("stroke-width", 2)
-    .attr("d", line);
-});
+    lineSVG.append("path")
+      .datum(values)
+      .attr("fill", "none")
+      .attr("stroke", color(origin))
+      .attr("stroke-width", 2)
+      .attr("d", line)
+      .on("click", () => {
+        handleInteraction({ Origin: origin });
+      });
 
-// Add legend-like labels on the right side
-nested.forEach(([origin], i) => {
-  svg.append("text")
-    .attr("x", width + 10)  // just outside the chart area
-    .attr("y", i * 20)      // stacked vertically
-    .attr("dy", "0.35em")
-    .attr("fill", color(origin))
-    .style("font-size", "12px")
-    .text(origin);
-});
-
+    // Add legend-like labels on the right side
+    lineSVG.append("text")
+      .attr("x", width + 10)
+      .attr("y", i * 20)
+      .attr("dy", "0.35em")
+      .attr("fill", color(origin))
+      .style("font-size", "12px")
+      .style("cursor", "pointer")
+      .text(origin)
+      .on("click", () => {
+        handleInteraction({ Origin: origin });
+      });
+  });
 
   // Make axis text and lines black
-  svg.selectAll(".axis path, .axis line, .axis text")
+  lineSVG.selectAll(".axis path, .axis line, .axis text")
      .attr("stroke", "black")
      .attr("fill", "black");
-});
+}
