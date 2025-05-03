@@ -1,4 +1,10 @@
-d3.csv("a1-cars.csv").then(data => {
+// scatter-plot.js
+let scatterSVG, scatterOriginalData;
+
+function updateScatterPlot(data) {
+  scatterOriginalData = data;
+  d3.select("#scatterPlot").select("svg").remove();
+
   data = data.filter(d => d.MPG && d.Horsepower);
   data.forEach(d => {
     d.Horsepower = +d.Horsepower;
@@ -9,7 +15,7 @@ d3.csv("a1-cars.csv").then(data => {
         width = 800 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
-  const svg = d3.select("#scatterPlot")
+  scatterSVG = d3.select("#scatterPlot")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -19,35 +25,38 @@ d3.csv("a1-cars.csv").then(data => {
   const x = d3.scaleLinear()
               .domain(d3.extent(data, d => d.Horsepower))
               .range([0, width]);
-              
+
   const y = d3.scaleLinear()
               .domain(d3.extent(data, d => d.MPG))
               .range([height, 0]);
 
   // X Axis
-  svg.append("g")
+  scatterSVG.append("g")
      .attr("transform", `translate(0,${height})`)
      .attr("class", "axis")
      .call(d3.axisBottom(x));
 
   // Y Axis
-  svg.append("g")
+  scatterSVG.append("g")
      .attr("class", "axis")
      .call(d3.axisLeft(y));
 
   // Data points
-  svg.selectAll("circle")
+  scatterSVG.selectAll("circle")
     .data(data)
     .enter().append("circle")
     .attr("cx", d => x(d.Horsepower))
     .attr("cy", d => y(d.MPG))
     .attr("r", 4)
     .attr("fill", "steelblue")
+    .on("click", (event, d) => {
+      handleInteraction(d);
+    })
     .append("title")
     .text(d => `${d.Car} (${d.MPG} MPG)`);
 
   // Set axis color to black
-  svg.selectAll(".axis path, .axis line, .axis text")
+  scatterSVG.selectAll(".axis path, .axis line, .axis text")
      .attr("stroke", "black")
      .attr("fill", "black");
-});
+}
