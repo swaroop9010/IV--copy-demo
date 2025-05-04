@@ -41,20 +41,19 @@ function updateLineChart(data) {
 
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-  // X Axis
   lineSVG.append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x).tickFormat(d => 1900 + d))
-    .selectAll("text")
-    .attr("fill", "black");
+    .selectAll("text").attr("fill", "black");
 
-  // Y Axis
   lineSVG.append("g")
     .call(d3.axisLeft(y))
-    .selectAll("text")
-    .attr("fill", "black");
+    .selectAll("text").attr("fill", "black");
 
-  // Line Generator
+  // Ensure axis lines are visible
+  lineSVG.selectAll("path.domain").attr("stroke", "black");
+  lineSVG.selectAll(".tick line").attr("stroke", "black");
+
   const line = d3.line()
     .x(d => x(d.year))
     .y(d => y(d.avgMPG));
@@ -69,7 +68,6 @@ function updateLineChart(data) {
       .on("click", () => handleInteraction({ Origin: group.origin }));
   });
 
-  // Legend at Top Right
   const legend = lineSVG.append("g")
     .attr("transform", `translate(${width - 10}, 0)`);
 
