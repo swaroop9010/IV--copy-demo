@@ -37,42 +37,19 @@ h1 {
   background: #ccc;
 }
 
-.btn-group {
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-
-.btn-group button {
-  background-color: #2980b9;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-.btn-group button:hover {
-  background-color: #1c5980;
-}
-
 .chart-section {
-  margin-top: 20px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 10px;
 }
 
 #charts-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 30px;
   padding: 40px 20px;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
@@ -82,9 +59,7 @@ h1 {
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   transition: background 0.3s ease;
-  flex: 1 1 45%;
-  min-width: 300px;
-  max-width: 550px;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -137,7 +112,6 @@ h1 {
   background-color: #000;
 }
 
-/* Fullscreen modal */
 .modal {
   display: none;
   position: fixed;
@@ -174,9 +148,8 @@ h1 {
   cursor: pointer;
 }
 
-/* ABOUT SECTION */
 .full-width-about {
-  background: rgba(0, 0, 0, 0.5); /* same as hero */
+  background: rgba(0, 0, 0, 0.5);
   padding: 60px 20px;
   margin-top: 40px;
   border-radius: 16px;
@@ -206,7 +179,6 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* Footer */
 .footer {
   background-color: rgba(0, 0, 0, 0.7);
   color: #ccc;
@@ -216,7 +188,6 @@ h1 {
   margin-top: 20px;
 }
 
-/* Dark mode overrides */
 body.dark-mode {
   background-color: #111;
   color: #eee;
