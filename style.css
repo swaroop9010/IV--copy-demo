@@ -222,6 +222,12 @@ body.dark-mode .modal-content {
   background: #1e1e1e;
   color: white;
 }
+
+.chart-section {
+  max-height: 350px;
+  overflow-y: hidden;
+}
+
 body.dark-mode .footer {
   background-color: rgba(255, 255, 255, 0.1);
   color: #ccc;
