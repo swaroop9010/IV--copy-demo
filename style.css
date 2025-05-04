@@ -37,20 +37,12 @@ h1 {
   background: #ccc;
 }
 
-.chart-section {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  padding: 10px;
-  overflow: visible; /* ✅ allows inner SVG content to be fully visible */
-}
-
 #charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 30px;
   padding: 40px 20px;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -63,7 +55,7 @@ h1 {
   transition: background 0.3s ease;
   width: 100%;
   box-sizing: border-box;
-  overflow: visible; /* ✅ ensures legends/axes don’t get cut off */
+  overflow: visible;
 }
 
 .chart-box h2 {
@@ -115,6 +107,24 @@ h1 {
   background-color: #000;
 }
 
+.chart-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  overflow: visible;
+}
+
+/* Make SVGs scale and keep margins for labels/ticks */
+.chart-section svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+  overflow: visible !important;
+}
+
+/* Fullscreen modal */
 .modal {
   display: none;
   position: fixed;
@@ -140,6 +150,7 @@ h1 {
 .modal-content svg {
   width: 100% !important;
   height: auto !important;
+  overflow: visible;
 }
 .close {
   color: red;
@@ -151,6 +162,7 @@ h1 {
   cursor: pointer;
 }
 
+/* About Section */
 .full-width-about {
   background: rgba(0, 0, 0, 0.5);
   padding: 60px 20px;
@@ -182,6 +194,7 @@ h1 {
   margin-bottom: 10px;
 }
 
+/* Footer */
 .footer {
   background-color: rgba(0, 0, 0, 0.7);
   color: #ccc;
@@ -191,7 +204,7 @@ h1 {
   margin-top: 20px;
 }
 
-/* Dark Mode */
+/* Dark mode overrides */
 body.dark-mode {
   background-color: #111;
   color: #eee;
@@ -212,13 +225,4 @@ body.dark-mode .modal-content {
 body.dark-mode .footer {
   background-color: rgba(255, 255, 255, 0.1);
   color: #ccc;
-}
-
-/* ✅ Fix for D3 Charts Clipping Axes/Labels */
-.chart-section svg {
-  width: 100%;
-  height: auto;
-  overflow: visible !important;
-  display: block;
-  margin: auto;
 }
