@@ -23,13 +23,13 @@ function updateLineChart(data) {
     })
   );
 
-  const margin = { top: 40, right: 120, bottom: 50, left: 60 },
-        width = 800 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
+  const margin = { top: 40, right: 80, bottom: 50, left: 60 },
+        width = 450 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
 
   lineSVG = d3.select("#lineChart")
     .append("svg")
-    .attr("width", width + margin.left + margin.right + 100)
+    .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -56,12 +56,10 @@ function updateLineChart(data) {
   lineSVG.selectAll(".tick line").attr("stroke", "black");
   lineSVG.selectAll(".tick text").attr("fill", "black");
 
-  // Line generator
   const line = d3.line()
     .x(d => x(d.year))
     .y(d => y(d.avgMPG));
 
-  // Draw each origin line
   groupedData.forEach(group => {
     lineSVG.append("path")
       .datum(group.values)
@@ -72,24 +70,13 @@ function updateLineChart(data) {
       .on("click", () => handleInteraction({ Origin: group.origin }));
   });
 
-  // Legend
   const legend = lineSVG.append("g")
-    .attr("transform", `translate(${width + 20}, 10)`);
+    .attr("transform", `translate(${width - 40}, 10)`);
 
   groupedData.forEach((group, i) => {
     const legendRow = legend.append("g")
       .attr("transform", `translate(0, ${i * 20})`);
-
-    legendRow.append("rect")
-      .attr("width", 15)
-      .attr("height", 15)
-      .attr("fill", color(group.origin));
-
-    legendRow.append("text")
-      .attr("x", 20)
-      .attr("y", 12)
-      .text(group.origin)
-      .style("font-size", "12px")
-      .attr("fill", "black");
+    legendRow.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(group.origin));
+    legendRow.append("text").attr("x", 20).attr("y", 12).text(group.origin).style("font-size", "12px").attr("fill", "black");
   });
 }
