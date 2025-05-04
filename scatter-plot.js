@@ -12,8 +12,8 @@ function updateScatterPlot(data) {
                Weight: +d.Weight
              }));
 
-  const margin = { top: 30, right: 50, bottom: 60, left: 60 },
-        width = 450 - margin.left - margin.right,
+  const margin = { top: 20, right: 130, bottom: 60, left: 60 },
+        width = 540 - margin.left - margin.right,
         height = 300 - margin.top - margin.bottom;
 
   const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -35,8 +35,12 @@ function updateScatterPlot(data) {
 
   scatterSVG.append("g")
     .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x));
-  scatterSVG.append("g").call(d3.axisLeft(y));
+    .call(d3.axisBottom(x))
+    .selectAll("text").attr("fill", "black");
+
+  scatterSVG.append("g")
+    .call(d3.axisLeft(y))
+    .selectAll("text").attr("fill", "black");
 
   scatterSVG.selectAll("circle")
     .data(data)
@@ -50,9 +54,10 @@ function updateScatterPlot(data) {
     .append("title")
     .text(d => `${d.Car}\nWeight: ${d.Weight} lbs\nHP: ${d.Horsepower}\nOrigin: ${d.Origin}`);
 
+  // Legend at Top Right
   const origins = Array.from(new Set(data.map(d => d.Origin)));
   const legend = scatterSVG.append("g")
-    .attr("transform", `translate(${width - 40}, 10)`);
+    .attr("transform", `translate(${width - 10}, 0)`);
 
   origins.forEach((origin, i) => {
     const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
