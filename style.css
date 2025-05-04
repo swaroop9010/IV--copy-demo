@@ -212,10 +212,18 @@ body.dark-mode .footer {
   color: #ccc;
 }
 
+
 .chart-section svg {
-  max-width: 100%;
+  width: 100%;
   height: auto;
-  display: block;
-  margin: auto;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.chart-section {
+  overflow: visible;  /* Allow internal SVGs to fully show axes/labels */
+  padding: 20px;
+}
+
+.chart-box {
+  overflow: visible;
 }
