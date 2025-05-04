@@ -51,8 +51,14 @@ function updateLineChart(data) {
     .selectAll("text").attr("fill", "black");
 
   // Ensure axis lines are visible
-  lineSVG.selectAll("path.domain").attr("stroke", "black");
-  lineSVG.selectAll(".tick line").attr("stroke", "black");
+  lineSVG.selectAll("path.domain")
+  .style("stroke", "black")
+  .style("stroke-width", "1.5px")
+  .style("shape-rendering", "crispEdges");
+
+  lineSVG.selectAll(".tick line")
+  .style("stroke", "black")
+  .style("stroke-width", "1px");
 
   const line = d3.line()
     .x(d => x(d.year))
