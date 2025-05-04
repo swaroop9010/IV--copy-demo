@@ -205,7 +205,7 @@ h1 {
 }
 
 /* Dark mode overrides */
-body.dark-mode {
+/* body.dark-mode {
   background-color: #111;
   color: #eee;
 }
@@ -221,7 +221,7 @@ body.dark-mode .about-content {
 body.dark-mode .modal-content {
   background: #1e1e1e;
   color: white;
-}
+}*/
 
 .chart-section {
   max-height: 350px;
