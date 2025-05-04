@@ -10,7 +10,7 @@
 <body>
   <div class="hero">
     <h1>Car Performance Visualization Dashboard</h1>
-    <button class="dark-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    <!-- <button class="dark-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button> -->
   </div>
 
   <main>
@@ -36,7 +36,7 @@
         <ul>
           <li>Data cleaning and preparation</li>
           <li>Building linked visualizations with D3.js</li>
-          <li>User-focused UI design (tooltips, legends, dark mode, responsiveness)</li>
+          <li>User-focused UI design (tooltips, legends, responsiveness)</li>
         </ul>
         <p>
           Whether you are a student, analyst, or auto industry expert, this dashboard helps uncover relationships in automobile data at a glance.
@@ -157,9 +157,9 @@
       resetAll();
     }
 
-    function toggleDarkMode() {
-      document.body.classList.toggle("dark-mode");
-    }
+    //function toggleDarkMode() {
+    //  document.body.classList.toggle("dark-mode");
+   // }
 
     d3.csv("a1-cars.csv").then(data => {
       updateBarChart(data);
