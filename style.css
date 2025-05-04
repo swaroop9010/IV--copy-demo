@@ -42,7 +42,7 @@ h1 {
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   padding: 10px;
-  overflow: hidden;
+  overflow: visible; /* ✅ allows inner SVG content to be fully visible */
 }
 
 #charts-grid {
@@ -63,6 +63,7 @@ h1 {
   transition: background 0.3s ease;
   width: 100%;
   box-sizing: border-box;
+  overflow: visible; /* ✅ ensures legends/axes don’t get cut off */
 }
 
 .chart-box h2 {
@@ -190,6 +191,7 @@ h1 {
   margin-top: 20px;
 }
 
+/* Dark Mode */
 body.dark-mode {
   background-color: #111;
   color: #eee;
@@ -212,18 +214,11 @@ body.dark-mode .footer {
   color: #ccc;
 }
 
-
+/* ✅ Fix for D3 Charts Clipping Axes/Labels */
 .chart-section svg {
   width: 100%;
   height: auto;
-  overflow: visible;
-}
-
-.chart-section {
-  overflow: visible;  /* Allow internal SVGs to fully show axes/labels */
-  padding: 20px;
-}
-
-.chart-box {
-  overflow: visible;
+  overflow: visible !important;
+  display: block;
+  margin: auto;
 }
