@@ -42,6 +42,10 @@ function updateScatterPlot(data) {
     .call(d3.axisLeft(y))
     .selectAll("text").attr("fill", "black");
 
+  // Ensure axis lines are visible
+  scatterSVG.selectAll("path.domain").attr("stroke", "black");
+  scatterSVG.selectAll(".tick line").attr("stroke", "black");
+
   scatterSVG.selectAll("circle")
     .data(data)
     .enter().append("circle")
@@ -54,7 +58,6 @@ function updateScatterPlot(data) {
     .append("title")
     .text(d => `${d.Car}\nWeight: ${d.Weight} lbs\nHP: ${d.Horsepower}\nOrigin: ${d.Origin}`);
 
-  // Legend at Top Right
   const origins = Array.from(new Set(data.map(d => d.Origin)));
   const legend = scatterSVG.append("g")
     .attr("transform", `translate(${width - 10}, 0)`);
