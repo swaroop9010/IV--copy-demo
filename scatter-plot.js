@@ -43,8 +43,14 @@ function updateScatterPlot(data) {
     .selectAll("text").attr("fill", "black");
 
   // Ensure axis lines are visible
-  scatterSVG.selectAll("path.domain").attr("stroke", "black");
-  scatterSVG.selectAll(".tick line").attr("stroke", "black");
+  scatterSVG.selectAll("path.domain")
+  .style("stroke", "black")
+  .style("stroke-width", "1.5px")
+  .style("shape-rendering", "crispEdges");
+
+  scatterSVG.selectAll(".tick line")
+  .style("stroke", "black")
+  .style("stroke-width", "1px");
 
   scatterSVG.selectAll("circle")
     .data(data)
