@@ -41,7 +41,7 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
     .attr("opacity", d => selectedOrigin === null || d.data.Origin === selectedOrigin ? 1 : 0.3)
     .on("click", (event, d) => {
       selectedOrigin = d.data.Origin;
-      updatePieChart(pieOriginalData, selectedOrigin, true); // clicked from this chart
+      updatePieChart(pieOriginalData, selectedOrigin, true); // clicked from pie
       handleInteraction({ Origin: d.data.Origin });
     });
 
@@ -50,16 +50,23 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
     .attr("dy", "0.35em")
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
+    .attr("fill", "white")
     .text(d => {
       const count = d.data.Count;
-      const percent = ((count / total) * 100).toFixed(1) + "%";
+      const percent = ((count / total) * 100).toFixed(1);
 
-      // Logic for label
-      if (selectedOrigin === null) return `${count} (${percent})`; // default
-      if (selectedOrigin === d.data.Origin) return `${count}`;      // highlighted only
-      return "";                                                    // faded out
-    })
-    .attr("fill", "white");
+      if (selectedOrigin === null) {
+        // default state: show full label with percent
+        return `${count} (${percent}%)`;
+      }
+
+      // if selected, only show label for selected region in special format
+      if (selectedOrigin === d.data.Origin) {
+        return `${count} (${percent}/100)`;
+      }
+
+      return ""; // hide all other labels
+    });
 
   const legend = d3.select("#pieChart svg")
     .append("g")
@@ -71,4 +78,3 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
     row.append("text").attr("x", 20).attr("y", 12).text(d.Origin).style("font-size", "12px").attr("fill", "black");
   });
 }
-//corrected(1)//
