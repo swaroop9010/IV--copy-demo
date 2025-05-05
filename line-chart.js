@@ -1,4 +1,4 @@
-// line-chart.js
+// line-chart.js 
 let lineSVG, lineOriginalData;
 
 function updateLineChart(data, selectedOrigin = null) {
@@ -41,12 +41,28 @@ function updateLineChart(data, selectedOrigin = null) {
 
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
+  // X-axis with visible line
   lineSVG.append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x).tickFormat(d => 1900 + d))
-    .selectAll("text").attr("fill", "black");
+    .selectAll("text")
+    .attr("fill", "black");
 
-  lineSVG.append("g").call(d3.axisLeft(y)).selectAll("text").attr("fill", "black");
+  lineSVG.select("g:last-of-type")
+    .selectAll("path,line")
+    .style("stroke", "black")
+    .style("stroke-width", 1);
+
+  // Y-axis with visible line
+  lineSVG.append("g")
+    .call(d3.axisLeft(y))
+    .selectAll("text")
+    .attr("fill", "black");
+
+  lineSVG.select("g:nth-of-type(2)")
+    .selectAll("path,line")
+    .style("stroke", "black")
+    .style("stroke-width", 1);
 
   const line = d3.line()
     .x(d => x(d.year))
