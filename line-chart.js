@@ -81,6 +81,9 @@ function updateLineChart(data, selectedOrigin = null) {
         updateLineChart(lineOriginalData, highlightOrigin);
         handleInteraction({ Origin: group.origin });
       });
+    lineSVG.selectAll("path.domain").attr("stroke", "black");
+    lineSVG.selectAll(".tick line").attr("stroke", "black");
+    lineSVG.selectAll(".tick text").attr("fill", "black");
   });
 
   const legend = lineSVG.append("g")
