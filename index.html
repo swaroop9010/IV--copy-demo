@@ -129,11 +129,10 @@
     selectedOrigin = selectedData.Origin;
 
     d3.csv("a1-cars.csv").then(data => {
-      // Do NOT filter data — pass full dataset and use highlight logic in each chart
       updateBarChart(data, highlightOrigin);
       updateLineChart(data, highlightOrigin);
       updateScatterPlot(data, highlightOrigin);
-      updatePieChart(data, highlightOrigin, false);
+      updatePieChart(data, highlightOrigin, false);  // Show value-only on selection
     });
   }
 
@@ -145,7 +144,7 @@
       updateBarChart(data);
       updateLineChart(data);
       updateScatterPlot(data);
-      updatePieChart(data);
+      updatePieChart(data, null, false);  // Reset pie chart to show value + percent
     });
   }
 
@@ -166,7 +165,7 @@
     updateBarChart(data);
     updateLineChart(data);
     updateScatterPlot(data);
-    updatePieChart(data);
+    updatePieChart(data, null, false);  // Initial state with full pie info
   });
 </script>
 </body>
