@@ -1,7 +1,8 @@
 // bar-chart.js
-let barSVG, barOriginalData, activeBar = null;
+let barSVG, barOriginalData;
+let highlightOrigin = null;
 
-function updateBarChart(data) {
+function updateBarChart(data, selectedOrigin = null) {
   barOriginalData = data;
   d3.select("#barChart").select("svg").remove();
 
@@ -32,21 +33,12 @@ function updateBarChart(data) {
               .domain([0, d3.max(mpgByOrigin, d => d.AvgMPG)])
               .range([height, 0]);
 
-  // Axes
   barSVG.append("g")
     .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x))
-    .selectAll("text").attr("fill", "black");
+    .call(d3.axisBottom(x));
 
-  barSVG.append("g")
-    .call(d3.axisLeft(y))
-    .selectAll("text").attr("fill", "black");
+  barSVG.append("g").call(d3.axisLeft(y));
 
-  barSVG.selectAll("path.domain, .tick line")
-    .style("stroke", "black")
-    .style("stroke-width", "1px");
-
-  // Draw bars
   barSVG.selectAll("rect")
     .data(mpgByOrigin)
     .enter().append("rect")
@@ -54,29 +46,22 @@ function updateBarChart(data) {
     .attr("y", d => y(d.AvgMPG))
     .attr("width", x.bandwidth())
     .attr("height", d => height - y(d.AvgMPG))
-    .attr("fill", d => d.Origin === activeBar ? "#d62728" : "#ff7f0e")
-    .style("opacity", d => activeBar && d.Origin !== activeBar ? 0.3 : 1)
+    .attr("fill", d =>
+      selectedOrigin === null
+        ? "#ff7f0e"
+        : d.Origin === selectedOrigin
+        ? "#d62728"
+        : "#ffcc99"
+    )
     .on("click", (event, d) => {
-      activeBar = d.Origin;
-      updateBarChart(barOriginalData);
+      highlightOrigin = d.Origin;
+      updateBarChart(barOriginalData, highlightOrigin);
       handleInteraction({ Origin: d.Origin });
-    });
+    })
+    .append("title")
+    .text(d => `MPG: ${d.AvgMPG.toFixed(1)}`);
 
-  // Show MPG value on selected bar
-  if (activeBar) {
-    const selected = mpgByOrigin.find(d => d.Origin === activeBar);
-    barSVG.append("text")
-      .attr("x", x(selected.Origin) + x.bandwidth() / 2)
-      .attr("y", y(selected.AvgMPG) - 8)
-      .attr("text-anchor", "middle")
-      .attr("fill", "black")
-      .style("font-size", "13px")
-      .text(selected.AvgMPG.toFixed(1));
-  }
-}
-
-// Global Reset Handler
-function resetBarChart() {
-  activeBar = null;
-  updateBarChart(barOriginalData);
+  barSVG.selectAll("path.domain").attr("stroke", "black");
+  barSVG.selectAll(".tick line").attr("stroke", "black");
+  barSVG.selectAll(".tick text").attr("fill", "black");
 }
