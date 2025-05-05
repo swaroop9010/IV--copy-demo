@@ -56,16 +56,14 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
       const percent = ((count / total) * 100).toFixed(1);
 
       if (selectedOrigin === null) {
-        // default state: show full label with percent
         return `${count} (${percent}%)`;
       }
 
-      // if selected, only show label for selected region in special format
       if (selectedOrigin === d.data.Origin) {
         return `${count} (${percent}/100)`;
       }
 
-      return ""; // hide all other labels
+      return ""; // hide other labels
     });
 
   const legend = d3.select("#pieChart svg")
