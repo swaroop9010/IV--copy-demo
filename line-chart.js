@@ -1,7 +1,7 @@
 // line-chart.js
-let lineSVG, lineOriginalData, activeLine = null;
+let lineSVG, lineOriginalData;
 
-function updateLineChart(data) {
+function updateLineChart(data, selectedOrigin = null) {
   lineOriginalData = data;
   d3.select("#lineChart").select("svg").remove();
 
@@ -46,13 +46,7 @@ function updateLineChart(data) {
     .call(d3.axisBottom(x).tickFormat(d => 1900 + d))
     .selectAll("text").attr("fill", "black");
 
-  lineSVG.append("g")
-    .call(d3.axisLeft(y))
-    .selectAll("text").attr("fill", "black");
-
-  lineSVG.selectAll("path.domain, .tick line")
-    .style("stroke", "black")
-    .style("stroke-width", "1.5px");
+  lineSVG.append("g").call(d3.axisLeft(y)).selectAll("text").attr("fill", "black");
 
   const line = d3.line()
     .x(d => x(d.year))
@@ -63,17 +57,16 @@ function updateLineChart(data) {
       .datum(group.values)
       .attr("fill", "none")
       .attr("stroke", color(group.origin))
-      .attr("stroke-width", group.origin === activeLine ? 3 : 1.5)
-      .attr("opacity", activeLine && group.origin !== activeLine ? 0.2 : 1)
+      .attr("stroke-width", selectedOrigin === group.origin ? 5 : 2)
+      .attr("opacity", selectedOrigin === null || selectedOrigin === group.origin ? 1 : 0.3)
       .attr("d", line)
       .on("click", () => {
-        activeLine = group.origin;
-        updateLineChart(lineOriginalData); // re-render with highlight
+        highlightOrigin = group.origin;
+        updateLineChart(lineOriginalData, highlightOrigin);
         handleInteraction({ Origin: group.origin });
       });
   });
 
-  // Top-right legend
   const legend = lineSVG.append("g")
     .attr("transform", `translate(${width - 10}, 0)`);
 
@@ -82,10 +75,4 @@ function updateLineChart(data) {
     row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(group.origin));
     row.append("text").attr("x", 20).attr("y", 12).text(group.origin).style("font-size", "12px").attr("fill", "black");
   });
-}
-
-// Reset handler
-function resetLineChart() {
-  activeLine = null;
-  updateLineChart(lineOriginalData);
 }
