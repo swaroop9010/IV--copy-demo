@@ -121,47 +121,25 @@
   <script src="pie-chart.js"></script>
 
   <script>
-    function handleInteraction(selectedData) {
-      d3.csv("a1-cars.csv").then(data => {
-        const filtered = data.filter(d =>
-          d.Manufacturer === selectedData.Manufacturer ||
-          d.Origin === selectedData.Origin ||
-          d.Car === selectedData.Car ||
-          +d.MPG === +selectedData.MPG
-        );
-        updateBarChart(filtered);
-        updateLineChart(filtered);
-        updateScatterPlot(filtered);
-        updatePieChart(filtered);
-      });
-    }
+  let highlightOrigin = null;
+  let selectedOrigin = null;
 
-    function resetAll() {
-      highlightOrigin = null;
-      selectedOrigin = null;
-      d3.csv("a1-cars.csv").then(data => {
-        updateBarChart(data);
-        updateLineChart(data);
-        updateScatterPlot(data);
-        updatePieChart(data);
-        });
-      }
+  function handleInteraction(selectedData) {
+    highlightOrigin = selectedData.Origin;
+    selectedOrigin = selectedData.Origin;
 
-    function openFullscreen(chartId) {
-      const content = document.getElementById(chartId).innerHTML;
-      document.getElementById("fullscreenContent").innerHTML = content;
-      document.getElementById("fullscreenModal").style.display = "block";
-    }
+    d3.csv("a1-cars.csv").then(data => {
+      // Do NOT filter data — pass full dataset and use highlight logic in each chart
+      updateBarChart(data, highlightOrigin);
+      updateLineChart(data, highlightOrigin);
+      updateScatterPlot(data, highlightOrigin);
+      updatePieChart(data, highlightOrigin);
+    });
+  }
 
-    function closeFullscreen() {
-      document.getElementById("fullscreenModal").style.display = "none";
-      document.getElementById("fullscreenContent").innerHTML = '';
-      resetAll();
-    }
-
-    //function toggleDarkMode() {
-    //  document.body.classList.toggle("dark-mode");
-   // }
+  function resetAll() {
+    highlightOrigin = null;
+    selectedOrigin = null;
 
     d3.csv("a1-cars.csv").then(data => {
       updateBarChart(data);
@@ -169,6 +147,27 @@
       updateScatterPlot(data);
       updatePieChart(data);
     });
-  </script>
+  }
+
+  function openFullscreen(chartId) {
+    const content = document.getElementById(chartId).innerHTML;
+    document.getElementById("fullscreenContent").innerHTML = content;
+    document.getElementById("fullscreenModal").style.display = "block";
+  }
+
+  function closeFullscreen() {
+    document.getElementById("fullscreenModal").style.display = "none";
+    document.getElementById("fullscreenContent").innerHTML = '';
+    resetAll();
+  }
+
+  // Initial load
+  d3.csv("a1-cars.csv").then(data => {
+    updateBarChart(data);
+    updateLineChart(data);
+    updateScatterPlot(data);
+    updatePieChart(data);
+  });
+</script>
 </body>
 </html>
