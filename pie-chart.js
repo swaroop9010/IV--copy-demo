@@ -1,13 +1,16 @@
 // pie-chart.js
 let pieSVG, pieOriginalData;
 let selectedOrigin = null;
-let pieClickedFromSelf = false;
 
 function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = false) {
-  pieOriginalData = data;
-  selectedOrigin = selectedOriginParam;
-  pieClickedFromSelf = clickedFromSelf;
+  // Preserve or update selection
+  if (clickedFromSelf) {
+    selectedOrigin = selectedOrigin === selectedOriginParam ? null : selectedOriginParam; // toggle selection
+  } else if (selectedOriginParam !== null) {
+    selectedOrigin = selectedOriginParam; // update from other chart
+  }
 
+  pieOriginalData = data;
   d3.select("#pieChart").select("svg").remove();
 
   const originCounts = d3.rollups(
@@ -40,8 +43,7 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
     .attr("fill", d => color(d.data.Origin))
     .attr("opacity", d => selectedOrigin === null || d.data.Origin === selectedOrigin ? 1 : 0.3)
     .on("click", (event, d) => {
-      selectedOrigin = d.data.Origin;
-      updatePieChart(pieOriginalData, selectedOrigin, true); // clicked from pie
+      updatePieChart(pieOriginalData, d.data.Origin, true); // clicked from pie
       handleInteraction({ Origin: d.data.Origin });
     });
 
@@ -56,14 +58,14 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
       const percent = ((count / total) * 100).toFixed(1);
 
       if (selectedOrigin === null) {
-        return `${count} (${percent}%)`;
+        return `${count} (${percent}%)`; // default view
       }
 
       if (selectedOrigin === d.data.Origin) {
-        return `${count} (${percent}/100)`;
+        return `${count} (${percent}/100)`; // selected view
       }
 
-      return ""; // hide other labels
+      return ""; // hide others
     });
 
   const legend = d3.select("#pieChart svg")
