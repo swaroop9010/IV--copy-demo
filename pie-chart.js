@@ -48,7 +48,7 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
       updateAllCharts(d.data.Origin); // Trigger interactions
     });
 
-  // Add labels showing only the value, no %
+  // Add value-only label for selected segment (no percentage)
   pieSVG.selectAll(".arc-label")
     .data(pie(originCounts))
     .enter()
@@ -59,9 +59,6 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
     .style("font-size", "12px")
     .style("font-weight", "bold")
     .text(d => {
-      if (selectedOrigin && d.data.Origin === selectedOrigin) {
-        return `${d.data.Count}`;
-      }
-      return "";
+      return selectedOrigin && d.data.Origin === selectedOrigin ? `${d.data.Count}` : "";
     });
 }
