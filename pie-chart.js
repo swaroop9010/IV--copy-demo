@@ -1,85 +1,73 @@
 // pie-chart.js
-let pieSVG, pieOriginalData, activePie = null;
+d3.csv("a1-cars.csv").then(function(data) {
+    const width = 450, height = 450, margin = 40;
+    const radius = Math.min(width, height) / 2 - margin;
 
-function updatePieChart(data) {
-  pieOriginalData = data;
-  d3.select("#pieChart").select("svg").remove();
+    const svg = d3.select("#pieChart")
+        .append("svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .append("g")
+        .attr("transform", `translate(${width / 2},${height / 2})`);
 
-  const originCounts = d3.rollups(
-    data,
-    v => v.length,
-    d => d.Origin
-  ).map(([Origin, Count]) => ({ Origin, Count }));
+    const color = d3.scaleOrdinal()
+        .domain(["American", "European", "Japanese"])
+        .range(["#1f77b4", "#ff7f0e", "#2ca02c"]);
 
-  const total = d3.sum(originCounts, d => d.Count);
-  const width = 400, height = 300, radius = Math.min(width, height) / 2;
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
+    let selectedOrigin = null;
 
-  pieSVG = d3.select("#pieChart")
-    .append("svg")
-    .attr("width", width + 120)
-    .attr("height", height + 40)
-    .append("g")
-    .attr("transform", `translate(${radius + 20}, ${height / 2})`);
+    function updateChart(selected = null) {
+        const counts = d3.rollup(data, v => v.length, d => d.Origin);
+        const pie = d3.pie().value(d => d[1]);
+        const data_ready = pie(Array.from(counts));
 
-  const pie = d3.pie().value(d => d.Count).sort(null);
-  const arc = d3.arc().innerRadius(0).outerRadius(radius);
-  const labelArc = d3.arc().innerRadius(0).outerRadius(radius - 30);
+        const arc = d3.arc()
+            .innerRadius(0)
+            .outerRadius(radius);
 
-  const arcs = pieSVG.selectAll("arc")
-    .data(pie(originCounts))
-    .enter().append("g")
-    .attr("class", "arc");
+        const pieGroups = svg.selectAll("path").data(data_ready, d => d.data[0]);
 
-  arcs.append("path")
-    .attr("d", arc)
-    .attr("fill", d => color(d.data.Origin))
-    .attr("opacity", d => activePie && d.data.Origin !== activePie ? 0.3 : 1)
-    .style("stroke", "white")
-    .style("stroke-width", "2px")
-    .on("click", (event, d) => {
-      activePie = d.data.Origin;
-      updatePieChart(pieOriginalData); // re-render with highlight
-      handleInteraction({ Origin: d.data.Origin });
+        pieGroups.enter()
+            .append("path")
+            .merge(pieGroups)
+            .transition().duration(500)
+            .attr("d", arc)
+            .attr("fill", d => color(d.data[0]))
+            .attr("opacity", d => !selected || selected === d.data[0] ? 1 : 0.3);
+
+        pieGroups.enter()
+            .append("title")
+            .merge(pieGroups.select("title"))
+            .text(d => `${d.data[0]}: ${d.data[1]} (${((d.data[1] / data.length) * 100).toFixed(1)}%)`);
+
+        const labels = svg.selectAll("text").data(data_ready, d => d.data[0]);
+        labels.enter()
+            .append("text")
+            .merge(labels)
+            .text(d =>
+                !selected || selected === d.data[0]
+                    ? `${d.data[0]}: ${d.data[1]} (${((d.data[1] / data.length) * 100).toFixed(1)}%)`
+                    : ""
+            )
+            .attr("transform", d => `translate(${arc.centroid(d)})`)
+            .style("text-anchor", "middle")
+            .style("font-size", "14px")
+            .attr("fill", "black");
+
+        pieGroups.exit().remove();
+        labels.exit().remove();
+    }
+
+    updateChart();
+
+    svg.selectAll("path").on("click", function(event, d) {
+        selectedOrigin = d.data[0] === selectedOrigin ? null : d.data[0];
+        updateChart(selectedOrigin);
+        window.dispatchEvent(new CustomEvent('originSelected', { detail: selectedOrigin }));
     });
 
-  arcs.append("text")
-    .attr("transform", d => `translate(${labelArc.centroid(d)})`)
-    .attr("dy", "0.35em")
-    .attr("text-anchor", "middle")
-    .style("font-size", "11px")
-    .style("fill", "white")
-    .text(d => {
-      const percent = ((d.data.Count / total) * 100).toFixed(1);
-      return percent > 5 ? `${percent}%` : "";
+    document.getElementById("resetBtnPie").addEventListener("click", () => {
+        selectedOrigin = null;
+        updateChart(null);
+        window.dispatchEvent(new CustomEvent('originSelected', { detail: null }));
     });
-
-  if (activePie) {
-    const selected = originCounts.find(d => d.Origin === activePie);
-    const percent = ((selected.Count / total) * 100).toFixed(1);
-    pieSVG.append("text")
-      .attr("x", 0)
-      .attr("y", -height / 2 + 20)
-      .attr("text-anchor", "middle")
-      .attr("fill", "black")
-      .style("font-size", "14px")
-      .text(`${selected.Origin}: ${selected.Count} cars (${percent}%)`);
-  }
-
-  // Legend
-  const legend = d3.select("#pieChart svg")
-    .append("g")
-    .attr("transform", `translate(${width - 40}, 20)`);
-
-  originCounts.forEach((d, i) => {
-    const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
-    row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(d.Origin));
-    row.append("text").attr("x", 20).attr("y", 12).text(d.Origin).style("font-size", "12px").attr("fill", "black");
-  });
-}
-
-// Reset handler
-function resetPieChart() {
-  activePie = null;
-  updatePieChart(pieOriginalData);
-}
+});
