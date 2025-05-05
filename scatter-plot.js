@@ -1,13 +1,22 @@
 // scatter-plot.js
-let scatterSVG, scatterOriginalData, activeOrigin = null;
+let scatterSVG, scatterOriginalData;
 
-function updateScatterPlot(data, originFilter = null) {
+function updateScatterPlot(data, selectedOrigin = null) {
   scatterOriginalData = data;
   d3.select("#scatterPlot").select("svg").remove();
 
-  const margin = { top: 20, right: 20, bottom: 50, left: 60 },
-        width = 500 - margin.left - margin.right,
-        height = 350 - margin.top - margin.bottom;
+  data = data.filter(d => d.Horsepower && d.Weight && d.Origin)
+             .map(d => ({
+               ...d,
+               Horsepower: +d.Horsepower,
+               Weight: +d.Weight
+             }));
+
+  const margin = { top: 20, right: 130, bottom: 60, left: 60 },
+        width = 540 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
+
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
 
   scatterSVG = d3.select("#scatterPlot")
     .append("svg")
@@ -17,16 +26,12 @@ function updateScatterPlot(data, originFilter = null) {
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
   const x = d3.scaleLinear()
-              .domain(d3.extent(data, d => +d.Weight))
-              .nice()
+              .domain(d3.extent(data, d => d.Weight))
               .range([0, width]);
 
   const y = d3.scaleLinear()
-              .domain(d3.extent(data, d => +d.Horsepower))
-              .nice()
+              .domain(d3.extent(data, d => d.Horsepower))
               .range([height, 0]);
-
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
 
   scatterSVG.append("g")
     .attr("transform", `translate(0,${height})`)
@@ -37,37 +42,41 @@ function updateScatterPlot(data, originFilter = null) {
     .call(d3.axisLeft(y))
     .selectAll("text").attr("fill", "black");
 
-  scatterSVG.selectAll("path.domain, .tick line")
+  // Ensure axis lines are visible
+  scatterSVG.selectAll("path.domain")
+    .style("stroke", "black")
+    .style("stroke-width", "1.5px")
+    .style("shape-rendering", "crispEdges");
+
+  scatterSVG.selectAll(".tick line")
     .style("stroke", "black")
     .style("stroke-width", "1px");
 
   scatterSVG.selectAll("circle")
     .data(data)
     .enter().append("circle")
-    .attr("cx", d => x(+d.Weight))
-    .attr("cy", d => y(+d.Horsepower))
+    .attr("cx", d => x(d.Weight))
+    .attr("cy", d => y(d.Horsepower))
     .attr("r", 4)
     .attr("fill", d => color(d.Origin))
-    .attr("opacity", d => originFilter && d.Origin !== originFilter ? 0.2 : 1);
+    .attr("opacity", d =>
+      selectedOrigin === null || selectedOrigin === d.Origin ? 0.9 : 0.2
+    )
+    .on("click", (event, d) => {
+      highlightOrigin = d.Origin;
+      updateScatterPlot(scatterOriginalData, highlightOrigin);
+      handleInteraction({ Origin: d.Origin });
+    })
+    .append("title")
+    .text(d => `${d.Car}\nWeight: ${d.Weight} lbs\nHP: ${d.Horsepower}\nOrigin: ${d.Origin}`);
 
-  // Legend
-  const regions = [...new Set(data.map(d => d.Origin))];
-  const legend = scatterSVG.append("g").attr("transform", `translate(${width - 100}, 10)`);
+  const origins = Array.from(new Set(data.map(d => d.Origin)));
+  const legend = scatterSVG.append("g")
+    .attr("transform", `translate(${width - 10}, 0)`);
 
-  regions.forEach((origin, i) => {
+  origins.forEach((origin, i) => {
     const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
     row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(origin));
     row.append("text").attr("x", 20).attr("y", 12).text(origin).style("font-size", "12px").attr("fill", "black");
   });
-}
-
-// Called externally when filters change
-function filterScatterPlotByOrigin(origin) {
-  activeOrigin = origin;
-  updateScatterPlot(scatterOriginalData, origin);
-}
-
-function resetScatterPlot() {
-  activeOrigin = null;
-  updateScatterPlot(scatterOriginalData);
 }
