@@ -121,20 +121,17 @@
   <script src="pie-chart.js"></script>
 
   <script>
+    
     function handleInteraction(selectedData) {
       d3.csv("a1-cars.csv").then(data => {
-        const filtered = data.filter(d =>
-          d.Manufacturer === selectedData.Manufacturer ||
-          d.Origin === selectedData.Origin ||
-          d.Car === selectedData.Car ||
-          +d.MPG === +selectedData.MPG
-        );
-        updateBarChart(filtered);
-        updateLineChart(filtered);
-        updateScatterPlot(filtered);
-        updatePieChart(filtered);
-      });
-    }
+        const origin = selectedData.Origin;
+        // Use full dataset for context — highlight selected origin
+        updateBarChart(data, origin);  // optional highlight
+        updateLineChart(data, origin);
+        updateScatterPlot(data, origin);
+        updatePieChart(data, origin, false);
+        });
+      }
 
     function resetAll() {
       d3.csv("a1-cars.csv").then(data => {
