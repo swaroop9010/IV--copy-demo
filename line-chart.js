@@ -41,25 +41,18 @@ function updateLineChart(data) {
 
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-  // X Axis
   lineSVG.append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x).tickFormat(d => 1900 + d))
     .selectAll("text").attr("fill", "black");
 
-  // Y Axis
   lineSVG.append("g")
     .call(d3.axisLeft(y))
     .selectAll("text").attr("fill", "black");
 
-  // Axis Lines
-  lineSVG.selectAll("path.domain")
+  lineSVG.selectAll("path.domain, .tick line")
     .style("stroke", "black")
     .style("stroke-width", "1.5px");
-
-  lineSVG.selectAll(".tick line")
-    .style("stroke", "black")
-    .style("stroke-width", "1px");
 
   const line = d3.line()
     .x(d => x(d.year))
@@ -80,7 +73,7 @@ function updateLineChart(data) {
       });
   });
 
-  // Legend at Top Right
+  // Top-right legend
   const legend = lineSVG.append("g")
     .attr("transform", `translate(${width - 10}, 0)`);
 
@@ -89,4 +82,10 @@ function updateLineChart(data) {
     row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(group.origin));
     row.append("text").attr("x", 20).attr("y", 12).text(group.origin).style("font-size", "12px").attr("fill", "black");
   });
+}
+
+// Reset handler
+function resetLineChart() {
+  activeLine = null;
+  updateLineChart(lineOriginalData);
 }
