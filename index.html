@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Performance Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="hero">
+    <h1>Car Performance Visualization Dashboard</h1>
+    <!-- <button class="dark-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button> -->
+  </div>
+
+  <main>
+    <!-- About This Dashboard Section -->
+    <div class="full-width-about">
+      <div class="about-content">
+        <h3>About This Dashboard</h3>
+        <p>
+          This interactive dashboard was developed as part of a data visualization project to analyze car performance metrics from a real-world automobile dataset. The project uses D3.js to create dynamic, responsive, and interactive charts that provide meaningful insights into vehicle specifications and trends. It leverages D3.js to render four synchronized visualizations: a bar chart, a line chart, a scatter plot, and a pie chart.
+        </p>
+        <p>
+          The goal is to help users understand trends in fuel efficiency, horsepower-to-weight relationships, manufacturer dominance by year and regional vehicle distribution over time.
+        </p>
+        <ul>
+          <li><strong>Bar Chart:</strong> Displays the average MPG by car origin to compare fuel efficiency across regions.</li>
+          <li><strong>Line Chart:</strong> Shows the trend of MPG over the years, helping identify improvements in fuel efficiency.</li>
+          <li><strong>Scatter Plot:</strong> Compares horsepower and weight of the top 20 cars, highlighting the trade-off between power and weight.</li>
+          <li><strong>Pie Chart:</strong> Shows the distribution of cars by origin and year, providing a proportional view of data.</li>
+        </ul>
+        <p>
+          All charts are fully interactive — clicking on any item filters all other charts, offering an intuitive and dynamic experience. This kind of visualization can be useful for automotive analysts, car buyers, or enthusiasts who want to understand market performance and engineering tradeoffs.
+        </p>
+        <ul>
+          <li>Data cleaning and preparation</li>
+          <li>Building linked visualizations with D3.js</li>
+          <li>User-focused UI design (tooltips, legends, responsiveness)</li>
+        </ul>
+        <p>
+          Whether you are a student, analyst, or auto industry expert, this dashboard helps uncover relationships in automobile data at a glance.
+        </p>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div id="charts-grid">
+      <!-- Chart 1: Bar Chart -->
+      <div class="chart-box">
+        <div class="chart-header" title="Click Full Screen to enlarge this chart">
+          <h2>Average MPG by Origin</h2>
+          <div class="chart-controls">
+            <button class="fullscreen-btn" onclick="openFullscreen('barChart')" title="View full screen">Full Screen</button>
+            <button class="reset-btn" onclick="resetAll()" title="Reset all charts to original state">Reset</button>
+          </div>
+        </div>
+        <p class="insight-summary">This chart compares average fuel efficiency by car origin (Japanese, European, American).</p>
+        <section id="barChart" class="chart-section"></section>
+      </div>
+
+      <!-- Chart 2: Line Chart -->
+      <div class="chart-box">
+        <div class="chart-header" title="Click Full Screen to enlarge this chart">
+          <h2>MPG Trend Over Years by Origin</h2>
+          <div class="chart-controls">
+            <button class="fullscreen-btn" onclick="openFullscreen('lineChart')" title="View full screen">Full Screen</button>
+            <button class="reset-btn" onclick="resetAll()" title="Reset all charts to original state">Reset</button>
+          </div>
+        </div>
+        <p class="insight-summary">This line chart shows how MPG has improved or declined over the years by region.</p>
+        <section id="lineChart" class="chart-section"></section>
+      </div>
+
+      <!-- Chart 3: Scatter Plot -->
+      <div class="chart-box">
+        <div class="chart-header" title="Click Full Screen to enlarge this chart">
+          <h2>Horsepower vs Weight</h2>
+          <div class="chart-controls">
+            <button class="fullscreen-btn" onclick="openFullscreen('scatterPlot')" title="View full screen">Full Screen</button>
+            <button class="reset-btn" onclick="resetAll()" title="Reset all charts to original state">Reset</button>
+          </div>
+        </div>
+        <p class="insight-summary">This scatter plot shows the trade-off between car weight and horsepower for top 20 cars.</p>
+        <section id="scatterPlot" class="chart-section"></section>
+      </div>
+
+      <!-- Chart 4: Pie Chart -->
+      <div class="chart-box">
+        <div class="chart-header" title="Click Full Screen to enlarge this chart">
+          <h2>Car Count by Origin</h2>
+          <div class="chart-controls">
+            <button class="fullscreen-btn" onclick="openFullscreen('pieChart')" title="View full screen">Full Screen</button>
+            <button class="reset-btn" onclick="resetAll()" title="Reset all charts to original state">Reset</button>
+          </div>
+        </div>
+        <p class="insight-summary">This pie chart represents how many cars belong to each origin category.</p>
+        <section id="pieChart" class="chart-section"></section>
+      </div>
+    </div>
+
+    <!-- Fullscreen Modal -->
+    <div id="fullscreenModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeFullscreen()">&times;</span>
+        <div id="fullscreenContent"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>Information Visualization Final Project – KSU – Spring 2025</p>
+    <p>Created by group "InfoSync_#5"</p>
+    <p>Sai Swaroop Tunuguntla (811300334) – Khyathi Swaroop Pathangay (811355978)</p>
+  </footer>
+
+  <!-- Chart Scripts -->
+  <script src="bar-chart.js"></script>
+  <script src="line-chart.js"></script>
+  <script src="scatter-plot.js"></script>
+  <script src="pie-chart.js"></script>
+
+  <script>
+    function handleInteraction(selectedData) {
+      d3.csv("a1-cars.csv").then(data => {
+        const filtered = data.filter(d =>
+          d.Manufacturer === selectedData.Manufacturer ||
+          d.Origin === selectedData.Origin ||
+          d.Car === selectedData.Car ||
+          +d.MPG === +selectedData.MPG
+        );
+        updateBarChart(filtered);
+        updateLineChart(filtered);
+        updateScatterPlot(filtered);
+        updatePieChart(filtered);
+      });
+    }
+
+    function resetAll() {
+      d3.csv("a1-cars.csv").then(data => {
+        updateBarChart(data);
+        updateLineChart(data);
+        updateScatterPlot(data);
+        updatePieChart(data);
+      });
+    }
+
+    function openFullscreen(chartId) {
+      const content = document.getElementById(chartId).innerHTML;
+      document.getElementById("fullscreenContent").innerHTML = content;
+      document.getElementById("fullscreenModal").style.display = "block";
+    }
+
+    function closeFullscreen() {
+      document.getElementById("fullscreenModal").style.display = "none";
+      document.getElementById("fullscreenContent").innerHTML = '';
+      resetAll();
+    }
+
+    //function toggleDarkMode() {
+    //  document.body.classList.toggle("dark-mode");
+   // }
+
+    d3.csv("a1-cars.csv").then(data => {
+      updateBarChart(data);
+      updateLineChart(data);
+      updateScatterPlot(data);
+      updatePieChart(data);
+    });
+  </script>
+</body>
+</html>
