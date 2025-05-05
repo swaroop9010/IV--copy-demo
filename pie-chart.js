@@ -18,13 +18,13 @@ function updatePieChart(data) {
   pieSVG = d3.select("#pieChart")
     .append("svg")
     .attr("width", width + 120)
-    .attr("height", height)
+    .attr("height", height + 40)
     .append("g")
     .attr("transform", `translate(${radius + 20}, ${height / 2})`);
 
   const pie = d3.pie().value(d => d.Count).sort(null);
   const arc = d3.arc().innerRadius(0).outerRadius(radius);
-  const labelArc = d3.arc().innerRadius(0).outerRadius(radius - 40);
+  const labelArc = d3.arc().innerRadius(0).outerRadius(radius - 30);
 
   const arcs = pieSVG.selectAll("arc")
     .data(pie(originCounts))
@@ -50,8 +50,8 @@ function updatePieChart(data) {
     .style("font-size", "11px")
     .style("fill", "white")
     .text(d => {
-      const percentage = ((d.data.Count / total) * 100).toFixed(1);
-      return percentage > 4 ? `${percentage}%` : "";
+      const percent = ((d.data.Count / total) * 100).toFixed(1);
+      return percent > 5 ? `${percent}%` : "";
     });
 
   if (activePie) {
@@ -63,9 +63,10 @@ function updatePieChart(data) {
       .attr("text-anchor", "middle")
       .attr("fill", "black")
       .style("font-size", "14px")
-      .text(`${selected.Origin}: ${selected.Count} (${percent}%)`);
+      .text(`${selected.Origin}: ${selected.Count} cars (${percent}%)`);
   }
 
+  // Legend
   const legend = d3.select("#pieChart svg")
     .append("g")
     .attr("transform", `translate(${width - 40}, 20)`);
@@ -75,4 +76,10 @@ function updatePieChart(data) {
     row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(d.Origin));
     row.append("text").attr("x", 20).attr("y", 12).text(d.Origin).style("font-size", "12px").attr("fill", "black");
   });
+}
+
+// Reset handler
+function resetPieChart() {
+  activePie = null;
+  updatePieChart(pieOriginalData);
 }
