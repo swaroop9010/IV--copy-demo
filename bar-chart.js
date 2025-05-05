@@ -30,38 +30,45 @@ function updateBarChart(data, selectedOrigin = null) {
               .padding(0.4);
 
   const y = d3.scaleLinear()
-              .domain([0, d3.max(mpgByOrigin, d => d.AvgMPG)])
+              .domain([0, d3.max(mpgByOrigin, d => d.AvgMPG) + 5])
               .range([height, 0]);
 
   barSVG.append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x));
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x));
 
-  barSVG.append("g").call(d3.axisLeft(y));
+  barSVG.append("g")
+        .call(d3.axisLeft(y));
 
-  barSVG.selectAll("rect")
+  // Add bars
+  barSVG.selectAll(".bar")
     .data(mpgByOrigin)
-    .enter().append("rect")
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
     .attr("x", d => x(d.Origin))
     .attr("y", d => y(d.AvgMPG))
     .attr("width", x.bandwidth())
     .attr("height", d => height - y(d.AvgMPG))
-    .attr("fill", d =>
-      selectedOrigin === null
-        ? "#ff7f0e"
-        : d.Origin === selectedOrigin
-        ? "#d62728"
-        : "#ffcc99"
-    )
-    .on("click", (event, d) => {
-      highlightOrigin = d.Origin;
-      updateBarChart(barOriginalData, highlightOrigin);
-      handleInteraction({ Origin: d.Origin });
-    })
-    .append("title")
-    .text(d => `MPG: ${d.AvgMPG.toFixed(1)}`);
+    .attr("fill", d => selectedOrigin && d.Origin === selectedOrigin ? "orange" : "#ccc")
+    .on("click", function (event, d) {
+      updateAllCharts(d.Origin); // Sync across charts
+    });
 
-  barSVG.selectAll("path.domain").attr("stroke", "black");
-  barSVG.selectAll(".tick line").attr("stroke", "black");
-  barSVG.selectAll(".tick text").attr("fill", "black");
+  // Remove any existing labels
+  d3.selectAll(".bar-label").remove();
+
+  // Add value labels on top of bars
+  barSVG.selectAll(".bar-label")
+    .data(mpgByOrigin)
+    .enter()
+    .append("text")
+    .attr("class", "bar-label")
+    .attr("x", d => x(d.Origin) + x.bandwidth() / 2)
+    .attr("y", d => y(d.AvgMPG) - 5)
+    .attr("text-anchor", "middle")
+    .style("fill", "black")
+    .style("font-weight", "bold")
+    .style("font-size", "12px")
+    .text(d => selectedOrigin && d.Origin === selectedOrigin ? d.AvgMPG.toFixed(1) : "");
 }
