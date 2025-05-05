@@ -1,5 +1,5 @@
 // line-chart.js
-let lineSVG, lineOriginalData;
+let lineSVG, lineOriginalData, activeLine = null;
 
 function updateLineChart(data) {
   lineOriginalData = data;
@@ -41,24 +41,25 @@ function updateLineChart(data) {
 
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
+  // X Axis
   lineSVG.append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x).tickFormat(d => 1900 + d))
     .selectAll("text").attr("fill", "black");
 
+  // Y Axis
   lineSVG.append("g")
     .call(d3.axisLeft(y))
     .selectAll("text").attr("fill", "black");
 
-  // Ensure axis lines are visible
+  // Axis Lines
   lineSVG.selectAll("path.domain")
-  .style("stroke", "black")
-  .style("stroke-width", "1.5px")
-  .style("shape-rendering", "crispEdges");
+    .style("stroke", "black")
+    .style("stroke-width", "1.5px");
 
   lineSVG.selectAll(".tick line")
-  .style("stroke", "black")
-  .style("stroke-width", "1px");
+    .style("stroke", "black")
+    .style("stroke-width", "1px");
 
   const line = d3.line()
     .x(d => x(d.year))
@@ -69,11 +70,17 @@ function updateLineChart(data) {
       .datum(group.values)
       .attr("fill", "none")
       .attr("stroke", color(group.origin))
-      .attr("stroke-width", 3)
+      .attr("stroke-width", group.origin === activeLine ? 3 : 1.5)
+      .attr("opacity", activeLine && group.origin !== activeLine ? 0.2 : 1)
       .attr("d", line)
-      .on("click", () => handleInteraction({ Origin: group.origin }));
+      .on("click", () => {
+        activeLine = group.origin;
+        updateLineChart(lineOriginalData); // re-render with highlight
+        handleInteraction({ Origin: group.origin });
+      });
   });
 
+  // Legend at Top Right
   const legend = lineSVG.append("g")
     .attr("transform", `translate(${width - 10}, 0)`);
 
