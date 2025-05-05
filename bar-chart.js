@@ -42,12 +42,7 @@ function updateBarChart(data) {
     .call(d3.axisLeft(y))
     .selectAll("text").attr("fill", "black");
 
-  // Axis lines visibility
-  barSVG.selectAll("path.domain")
-    .style("stroke", "black")
-    .style("stroke-width", "1.5px");
-
-  barSVG.selectAll(".tick line")
+  barSVG.selectAll("path.domain, .tick line")
     .style("stroke", "black")
     .style("stroke-width", "1px");
 
@@ -63,19 +58,25 @@ function updateBarChart(data) {
     .style("opacity", d => activeBar && d.Origin !== activeBar ? 0.3 : 1)
     .on("click", (event, d) => {
       activeBar = d.Origin;
-      updateBarChart(barOriginalData); // re-render with highlight
+      updateBarChart(barOriginalData);
       handleInteraction({ Origin: d.Origin });
     });
 
-  // Add text on top of selected bar
+  // Show MPG value on selected bar
   if (activeBar) {
     const selected = mpgByOrigin.find(d => d.Origin === activeBar);
     barSVG.append("text")
       .attr("x", x(selected.Origin) + x.bandwidth() / 2)
-      .attr("y", y(selected.AvgMPG) - 10)
+      .attr("y", y(selected.AvgMPG) - 8)
       .attr("text-anchor", "middle")
       .attr("fill", "black")
-      .style("font-size", "12px")
+      .style("font-size", "13px")
       .text(selected.AvgMPG.toFixed(1));
   }
+}
+
+// Global Reset Handler
+function resetBarChart() {
+  activeBar = null;
+  updateBarChart(barOriginalData);
 }
