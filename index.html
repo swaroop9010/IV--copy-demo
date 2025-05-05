@@ -137,13 +137,15 @@
     }
 
     function resetAll() {
+      highlightOrigin = null;
+      selectedOrigin = null;
       d3.csv("a1-cars.csv").then(data => {
         updateBarChart(data);
         updateLineChart(data);
         updateScatterPlot(data);
         updatePieChart(data);
-      });
-    }
+        });
+      }
 
     function openFullscreen(chartId) {
       const content = document.getElementById(chartId).innerHTML;
