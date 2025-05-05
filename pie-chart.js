@@ -3,11 +3,10 @@ let pieSVG, pieOriginalData;
 let selectedOrigin = null;
 
 function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = false) {
-  // Preserve or update selection
   if (clickedFromSelf) {
-    selectedOrigin = selectedOrigin === selectedOriginParam ? null : selectedOriginParam; // toggle selection
+    selectedOrigin = selectedOrigin === selectedOriginParam ? null : selectedOriginParam;
   } else if (selectedOriginParam !== null) {
-    selectedOrigin = selectedOriginParam; // update from other chart
+    selectedOrigin = selectedOriginParam;
   }
 
   pieOriginalData = data;
@@ -41,9 +40,12 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
   arcs.append("path")
     .attr("d", arc)
     .attr("fill", d => color(d.data.Origin))
-    .attr("opacity", d => selectedOrigin === null || d.data.Origin === selectedOrigin ? 1 : 0.3)
+    .attr("opacity", d => {
+      if (!selectedOrigin) return 1;
+      return d.data.Origin === selectedOrigin ? 1 : 0.3;
+    })
     .on("click", (event, d) => {
-      updatePieChart(pieOriginalData, d.data.Origin, true); // clicked from pie
+      updatePieChart(pieOriginalData, d.data.Origin, true);
       handleInteraction({ Origin: d.data.Origin });
     });
 
@@ -52,20 +54,17 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
     .attr("dy", "0.35em")
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
-    .attr("fill", "white")
+    .attr("fill", d => {
+      if (!selectedOrigin) return "white";
+      return d.data.Origin === selectedOrigin ? "white" : "#aaa"; // dull for others
+    })
+    .style("font-weight", d => (d.data.Origin === selectedOrigin ? "bold" : "normal"))
     .text(d => {
       const count = d.data.Count;
       const percent = ((count / total) * 100).toFixed(1);
-
-      if (selectedOrigin === null) {
-        return `${count} (${percent}%)`; // default view
-      }
-
-      if (selectedOrigin === d.data.Origin) {
-        return `${count} (${percent}/100)`; // selected view
-      }
-
-      return ""; // hide others
+      return selectedOrigin === d.data.Origin
+        ? `${count} (${percent}/100)`
+        : `${count} (${percent}%)`;
     });
 
   const legend = d3.select("#pieChart svg")
