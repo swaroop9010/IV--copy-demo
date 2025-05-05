@@ -5,7 +5,7 @@ let selectedOrigin = null;
 function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = false) {
   if (clickedFromSelf) {
     selectedOrigin = selectedOrigin === selectedOriginParam ? null : selectedOriginParam;
-  } else if (selectedOriginParam !== null) {
+  } else {
     selectedOrigin = selectedOriginParam;
   }
 
