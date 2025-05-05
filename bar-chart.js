@@ -1,5 +1,5 @@
 // bar-chart.js
-let barSVG, barOriginalData;
+let barSVG, barOriginalData, activeBar = null;
 
 function updateBarChart(data) {
   barOriginalData = data;
@@ -32,16 +32,26 @@ function updateBarChart(data) {
               .domain([0, d3.max(mpgByOrigin, d => d.AvgMPG)])
               .range([height, 0]);
 
-  // X Axis
+  // Axes
   barSVG.append("g")
     .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x))
+    .selectAll("text").attr("fill", "black");
 
-  // Y Axis
   barSVG.append("g")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y))
+    .selectAll("text").attr("fill", "black");
 
-  // Bars
+  // Axis lines visibility
+  barSVG.selectAll("path.domain")
+    .style("stroke", "black")
+    .style("stroke-width", "1.5px");
+
+  barSVG.selectAll(".tick line")
+    .style("stroke", "black")
+    .style("stroke-width", "1px");
+
+  // Draw bars
   barSVG.selectAll("rect")
     .data(mpgByOrigin)
     .enter().append("rect")
@@ -49,10 +59,23 @@ function updateBarChart(data) {
     .attr("y", d => y(d.AvgMPG))
     .attr("width", x.bandwidth())
     .attr("height", d => height - y(d.AvgMPG))
-    .attr("fill", "#ff7f0e")
-    .on("click", (event, d) => handleInteraction({ Origin: d.Origin }));
+    .attr("fill", d => d.Origin === activeBar ? "#d62728" : "#ff7f0e")
+    .style("opacity", d => activeBar && d.Origin !== activeBar ? 0.3 : 1)
+    .on("click", (event, d) => {
+      activeBar = d.Origin;
+      updateBarChart(barOriginalData); // re-render with highlight
+      handleInteraction({ Origin: d.Origin });
+    });
 
-  barSVG.selectAll("path.domain").attr("stroke", "black");
-  barSVG.selectAll(".tick line").attr("stroke", "black");
-  barSVG.selectAll(".tick text").attr("fill", "black");
+  // Add text on top of selected bar
+  if (activeBar) {
+    const selected = mpgByOrigin.find(d => d.Origin === activeBar);
+    barSVG.append("text")
+      .attr("x", x(selected.Origin) + x.bandwidth() / 2)
+      .attr("y", y(selected.AvgMPG) - 10)
+      .attr("text-anchor", "middle")
+      .attr("fill", "black")
+      .style("font-size", "12px")
+      .text(selected.AvgMPG.toFixed(1));
+  }
 }
