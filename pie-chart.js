@@ -29,36 +29,46 @@ function updatePieChart(data, selectedOriginParam = null, clickedFromSelf = fals
 
   const pie = d3.pie().value(d => d.Count).sort(null);
   const arc = d3.arc().innerRadius(0).outerRadius(radius);
-  const labelArc = d3.arc().innerRadius(0).outerRadius(radius + 30);
+  const labelArc = d3.arc().innerRadius(0).outerRadius(radius - 40);
 
-  // Draw pie slices
-  pieSVG.selectAll("path")
+  const arcs = pieSVG.selectAll("arc")
     .data(pie(originCounts))
-    .enter()
-    .append("path")
+    .enter().append("g").attr("class", "arc");
+
+  arcs.append("path")
     .attr("d", arc)
     .attr("fill", d => color(d.data.Origin))
-    .attr("stroke", "white")
-    .attr("stroke-width", 2)
-    .style("opacity", d => {
-      if (!selectedOrigin) return 1;
-      return d.data.Origin === selectedOrigin ? 1 : 0.3;
-    })
-    .on("click", function (event, d) {
-      updateAllCharts(d.data.Origin); // Trigger interactions
+    .attr("opacity", d => selectedOrigin === null || d.data.Origin === selectedOrigin ? 1 : 0.3)
+    .on("click", (event, d) => {
+      selectedOrigin = d.data.Origin;
+      updatePieChart(pieOriginalData, selectedOrigin, true); // clicked from this chart
+      handleInteraction({ Origin: d.data.Origin });
     });
 
-  // Add value-only label for selected segment (no percentage)
-  pieSVG.selectAll(".arc-label")
-    .data(pie(originCounts))
-    .enter()
-    .append("text")
-    .attr("class", "arc-label")
+  arcs.append("text")
     .attr("transform", d => `translate(${labelArc.centroid(d)})`)
+    .attr("dy", "0.35em")
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
-    .style("font-weight", "bold")
     .text(d => {
-      return selectedOrigin && d.data.Origin === selectedOrigin ? `${d.data.Count}` : "";
-    });
+      const count = d.data.Count;
+      const percent = ((count / total) * 100).toFixed(1) + "%";
+
+      // Logic for label
+      if (selectedOrigin === null) return `${count} (${percent})`; // default
+      if (selectedOrigin === d.data.Origin) return `${count}`;      // highlighted only
+      return "";                                                    // faded out
+    })
+    .attr("fill", "white");
+
+  const legend = d3.select("#pieChart svg")
+    .append("g")
+    .attr("transform", `translate(${width - 40}, 20)`);
+
+  originCounts.forEach((d, i) => {
+    const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
+    row.append("rect").attr("width", 15).attr("height", 15).attr("fill", color(d.Origin));
+    row.append("text").attr("x", 20).attr("y", 12).text(d.Origin).style("font-size", "12px").attr("fill", "black");
+  });
 }
+//corrected(1)//
