@@ -149,7 +149,7 @@ h1 {
 }
 .modal-content svg {
   width: 100% !important;
-  height: auto !important;
+  height: 500px !important;
   overflow: visible;
 }
 .close {
