@@ -1,6 +1,5 @@
 // bar-chart.js
 let barSVG, barOriginalData;
-let highlightOrigin = null;
 
 function updateBarChart(data, selectedOrigin = null) {
   barOriginalData = data;
@@ -40,7 +39,7 @@ function updateBarChart(data, selectedOrigin = null) {
   barSVG.append("g")
         .call(d3.axisLeft(y));
 
-  // Add bars
+  // Add bars with dynamic highlighting
   barSVG.selectAll(".bar")
     .data(mpgByOrigin)
     .enter()
@@ -50,12 +49,15 @@ function updateBarChart(data, selectedOrigin = null) {
     .attr("y", d => y(d.AvgMPG))
     .attr("width", x.bandwidth())
     .attr("height", d => height - y(d.AvgMPG))
-    .attr("fill", d => selectedOrigin && d.Origin === selectedOrigin ? "orange" : "#ccc")
+    .attr("fill", d => {
+      if (!selectedOrigin) return "orange";
+      return d.Origin === selectedOrigin ? "orange" : "#ccc";
+    })
     .on("click", function (event, d) {
-      updateAllCharts(d.Origin); // Sync across charts
+      updateAllCharts(d.Origin); // Synchronize with other charts
     });
 
-  // Remove any existing labels
+  // Remove previous labels before adding new ones
   d3.selectAll(".bar-label").remove();
 
   // Add value labels on top of bars
@@ -70,5 +72,8 @@ function updateBarChart(data, selectedOrigin = null) {
     .style("fill", "black")
     .style("font-weight", "bold")
     .style("font-size", "12px")
-    .text(d => selectedOrigin && d.Origin === selectedOrigin ? d.AvgMPG.toFixed(1) : "");
+    .text(d => {
+      if (!selectedOrigin) return "";
+      return d.Origin === selectedOrigin ? d.AvgMPG.toFixed(1) : "";
+    });
 }
